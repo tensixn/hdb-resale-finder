@@ -18,6 +18,7 @@ public class FlatDetailController {
         this.flatDetailService = flatDetailService;
     }
 
+    /** GET /api/flats/{id} (UC-04). Pass searchId to include the commute breakdown from that search. */
     @GetMapping("/{id}")
     public FlatDetailDto getFlatDetail(@PathVariable long id, @RequestParam(required = false) String searchId,
                                        @RequestParam(required = false) Double lease,
@@ -29,6 +30,7 @@ public class FlatDetailController {
         return flatDetailService.detail(id, searchId, weights, CurrentUser.optionalId().orElse(null));
     }
 
+    /** GET /api/flats/{id}/valuation (UC-05). */
     @GetMapping("/{id}/valuation")
     public ValuationDto getValuation(@PathVariable long id) {
         return flatDetailService.valuation(id);

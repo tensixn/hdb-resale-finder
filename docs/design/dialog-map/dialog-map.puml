@@ -1,0 +1,59 @@
+@startuml
+!include _style.iuml
+title UI dialog map (state machine of screens), HomeMatch SG
+
+[*] --> Search
+
+state "Search & priorities\n/" as Search : enter workplaces, modes,\nbudget, flat types, preset
+state "Results: list + map\n/results" as Results {
+  state "Ranked list" as List
+  state "Priorities panel" as Prio : sliders, presets (UC-03)
+  state "Filters panel" as Filt : price, type, town, lease (UC-10)
+  List --> Prio : Priorities
+  Prio --> List : close / re-ranked
+  List --> Filt : Filters
+  Filt --> List : Apply / Clear all
+}
+state "Flat detail\n/flats/:id" as Detail {
+  state "Verdict, factors,\ncommute, fair value" as Info
+  state "CPF grants &\naffordability panel" as Cpf : UC-06, UC-07
+  Info --> Cpf : expand
+  Cpf --> Info : collapse
+}
+state "Bookmarks\n/bookmarks" as Bookmarks
+state "Compare\n/compare" as Compare
+state "Profile\n/profile" as Profile
+state "Sign in\n/login" as Login
+state "Sign up\n/signup" as Signup
+state "Help & data status\n/help" as Help
+
+Search --> Results : Search flats [valid input]
+Search --> Search : Search flats [missing workplace] / show error
+Results --> Search : Edit search
+Results --> Detail : Details / map pin
+Detail --> Results : Back
+Detail --> Bookmarks : Bookmark [signed in]
+Detail --> Login : Bookmark [guest] / remember action
+Bookmarks --> Detail : open flat
+Bookmarks --> Compare : Compare [2 or more selected]
+Compare --> Bookmarks : Go to bookmarks
+Compare --> Detail : open flat
+Login --> Signup : Create an account
+Signup --> Login : Sign in instead
+Login --> Bookmarks : success [pending bookmark] / complete it
+Signup --> Bookmarks : success [pending bookmark] / complete it
+Login --> Search : success [no pending action]
+Login --> Login : wrong password / 5th failure locks 15 min
+Profile --> Search : Sign out / Re-run last search
+
+note right of Bookmarks
+  Bookmarks, Compare and Profile need sign-in.
+  A guest who opens one is sent to Sign in
+  and returned there afterwards.
+end note
+note bottom of Help
+  Reachable from the nav bar on every screen,
+  like Search, Bookmarks and Profile.
+  Refresh now runs the UC-12 batch.
+end note
+@enduml

@@ -1,0 +1,101 @@
+@startuml
+!include _style.iuml
+title Part 2: flat details, valuation, CPF and the batch job (UC-04 to UC-07, UC-12)
+
+class FlatDetailController <<boundary>> {
+  +getFlatDetail(id, searchId, weights): FlatDetailDto
+  +getValuation(id): ValuationDto
+}
+class FlatDetailService <<control>> {
+  +detail(flatId, searchId, weights: WeightsDto, userId): FlatDetailDto
+  +valuation(flatId): ValuationDto
+}
+class FlatSearchService <<control>>
+class ValuationService <<control>> {
+  +labelFor(flat: Flat): ValuationLabel
+  +fairValueFor(flat: Flat): Optional<Long>
+  +valuationFor(flat: Flat): ValuationDto
+  +refreshBaselines(skipTowns): int
+  +runBatch(trigger: String): ValuationBatchJob
+  ~ingest(records: List<ResaleRecord>): IngestResult
+}
+class ValuationRefreshScheduler <<control>> {
+  +scheduledRefresh()
+  +onStartup()
+}
+interface ValuationStrategy <<Strategy>> {
+  +classify(price: long, fairValue: double): ValuationLabel
+}
+class ThresholdValuationStrategy {
+  -band: double
+  +classify(price: long, fairValue: double): ValuationLabel
+}
+enum ValuationLabel {
+  UNDER_VALUED
+  FAIR_VALUED
+  OVER_VALUED
+  INSUFFICIENT_DATA
+}
+class ValuationBaseline <<entity>> {
+  -town, flatType: String
+  -averagePrice: long
+  -sampleSize: int
+  -windowStart, windowEnd: String
+}
+class ValuationBatchJob <<entity>> {
+  -startedAt, finishedAt: Instant
+  -status: Status
+  -recordsIngested: int
+  +finish(status, records, message, at)
+}
+interface ExternalApiGateway <<Facade>>
+
+class CpfController <<boundary>> {
+  +submitFinancialProfile(): FinancialProfileDto
+  +calculateGrant(req: CpfGrantRequestDto): CpfGrantResponseDto
+}
+class CpfGrantService <<control>> {
+  +estimate(req: CpfGrantRequestDto, userId): CpfGrantResponseDto
+  +savedProfile(userId): Optional<FinancialProfileDto>
+  +saveProfile(userId, dto: FinancialProfileDto)
+  +deleteProfile(userId)
+  ~cpfHousingGrant(income, status, flatType): CpfGrant
+  ~ehg(income, status): CpfGrant
+  ~phg(status, livingWithParents, parentKm, postalCode): CpfGrant
+}
+class GrantRules <<config>> {
+  cpfHousingGrant: CpfHousingGrant
+  ehg: Ehg
+  phg: Phg
+  loan: Loan
+  msrPercent: double
+}
+class CpfGrant <<value>> {
+  scheme: String  {CHG, EHG, PHG}
+  amount: long
+  reason: String
+}
+class FinancialProfile <<entity>> {
+  -userId: Long
+  -householdIncome: String {encrypted}
+  -maritalStatus: MaritalStatus
+  -parentPostalCode: String {encrypted}
+  -livingWithParents: boolean
+}
+
+FlatDetailController --> FlatDetailService
+FlatDetailService -left-> FlatSearchService : reuses stored search
+FlatDetailService --> ValuationService
+ValuationRefreshScheduler -left-> ValuationService : every 24 h
+ValuationService --> ValuationStrategy
+ValuationStrategy <|.. ThresholdValuationStrategy
+ValuationStrategy ..> ValuationLabel
+ValuationService ..> ValuationBaseline
+ValuationService ..> ValuationBatchJob : records each run
+ValuationService --> ExternalApiGateway : new resale records
+
+CpfController --> CpfGrantService
+CpfGrantService --> GrantRules
+CpfGrantService ..> CpfGrant : creates
+CpfGrantService ..> FinancialProfile
+@enduml

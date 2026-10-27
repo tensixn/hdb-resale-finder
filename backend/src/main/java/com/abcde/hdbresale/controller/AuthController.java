@@ -22,17 +22,20 @@ public class AuthController {
         this.authenticationService = authenticationService;
     }
 
+    /** POST /api/auth/login (UC-11). 401 for wrong credentials, 423 when the account is locked. */
     @PostMapping("/login")
     public AuthResponseDto login(@Valid @RequestBody AuthRequestDto request) {
         return authenticationService.login(request);
     }
 
+    /** POST /api/auth/register (UC-13). */
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public AuthResponseDto register(@Valid @RequestBody RegisterRequestDto request) {
         return authenticationService.register(request);
     }
 
+    /** POST /api/auth/logout (UC-15): ends the current session. */
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void logout() {

@@ -1,0 +1,90 @@
+@startuml
+!include _style.iuml
+title Part 1: search, commute and livability (UC-01, UC-02, UC-03, UC-10)
+
+class LivabilityController <<boundary>> {
+  +currentWeights(): WeightsDto
+  +adjustWeights(req: WeightAdjustRequest): WeightsDto
+  +replaceWeights(w: WeightsDto): WeightsDto
+  +resetWeights(): WeightsDto
+}
+class SearchController <<boundary>> {
+  +search(req: SearchRequest): SearchResultDto
+  +filter(searchId, req: FilterRequest): SearchResultDto
+}
+class LivabilityWeightService <<control>> {
+  +rebalance(current, changed: LivabilityFactor, value): WeightProfile
+  +normalise(w: WeightProfile): WeightProfile
+  +forUser(userId): WeightProfile
+  +saveForUser(userId, w: WeightProfile)
+}
+class FlatSearchService <<control>> {
+  -maxResults: int
+  +search(req: SearchRequest, userId): SearchResultDto
+  +view(searchId, filter: FilterRequest): SearchResultDto
+  +requireSearch(searchId): StoredSearch
+}
+class SearchSessionStore <<container>> {
+  -searches: Map<String, StoredSearch>
+  -ttl: Duration
+  +put(anchors, modes, entries, excluded, warnings): StoredSearch
+  +get(id): Optional<StoredSearch>
+}
+class WeightProfile <<entity>> {
+  -userId: Long
+  -leaseWeight, safetyWeight: double
+  -densityWeight, airQualityWeight: double
+  +{static} defaults(): WeightProfile
+  +total(): double
+}
+interface LivabilityScoringStrategy <<Strategy>> {
+  +score(f: LivabilityFactors, w: WeightProfile): LivabilityIndex
+}
+class WeightedSumScoringStrategy {
+  +score(f: LivabilityFactors, w: WeightProfile): LivabilityIndex
+}
+class CommuteCalculationService <<control>> {
+  +calculate(flats, anchors, modes): Map<Long, CommuteScore>
+  +forFlat(flat, anchors, modes): CommuteScore
+  +{static} scoreFor(minutes: int): double
+}
+class LivabilityDataService <<control>> {
+  +factorsFor(flat: Flat, psi: PsiSnapshot): LivabilityFactors
+  +currentPsi(): PsiSnapshot
+  +reloadStaticData()
+}
+class Workplace <<value>> {
+  query, label: String
+  location: GeoPoint
+}
+class CommuteScore <<value>> {
+  legs: List<Leg>
+  score: double
+  possiblyOutdated: boolean
+}
+class LivabilityFactors <<value>> {
+  lease, safety, density, airQuality: double
+}
+class LivabilityIndex <<value>> {
+  leaseScore, safetyScore: double
+  densityScore, airQualityScore: double
+  weightedTotal: double
+}
+interface ExternalApiGateway <<Facade>>
+
+LivabilityController --> LivabilityWeightService
+SearchController --> FlatSearchService
+FlatSearchService -left-> LivabilityWeightService
+FlatSearchService -right-> SearchSessionStore
+SearchSessionStore "1" --> "1..2" Workplace : anchors of each\nstored search
+LivabilityWeightService ..> WeightProfile
+FlatSearchService --> LivabilityScoringStrategy
+FlatSearchService --> CommuteCalculationService
+FlatSearchService --> LivabilityDataService
+LivabilityScoringStrategy <|.. WeightedSumScoringStrategy
+WeightedSumScoringStrategy ..> LivabilityFactors
+WeightedSumScoringStrategy ..> LivabilityIndex : creates
+CommuteCalculationService ..> CommuteScore : creates
+CommuteCalculationService --> ExternalApiGateway
+LivabilityDataService --> ExternalApiGateway
+@enduml

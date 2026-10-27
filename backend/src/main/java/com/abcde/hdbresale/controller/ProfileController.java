@@ -22,6 +22,7 @@ public class ProfileController {
         this.cpfGrantService = cpfGrantService;
     }
 
+    /** GET /api/profile (UC-14). Signed-in users only. */
     @GetMapping
     public ProfileDto profile() {
         return profileService.profile(CurrentUser.require().userId());

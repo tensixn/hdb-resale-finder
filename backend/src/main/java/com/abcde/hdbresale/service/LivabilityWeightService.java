@@ -78,6 +78,7 @@ public class LivabilityWeightService {
         return scaled;
     }
 
+    /** The user's last-used weights (FR-21), or the 25% defaults for guests and new users. */
     @Transactional(readOnly = true)
     public WeightProfile forUser(Long userId) {
         if (userId == null) {
@@ -88,6 +89,7 @@ public class LivabilityWeightService {
                 .orElseGet(WeightProfile::defaults);
     }
 
+    /** Stores the weights as the user's last-used profile. Does nothing for guests. */
     @Transactional
     public void saveForUser(Long userId, WeightProfile weights) {
         if (userId == null) {

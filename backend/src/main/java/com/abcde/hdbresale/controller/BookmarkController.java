@@ -19,6 +19,7 @@ public class BookmarkController {
         this.bookmarkService = bookmarkService;
     }
 
+    /** GET /api/bookmarks (UC-09). Signed-in users only. */
     @GetMapping
     public List<BookmarkDto> listBookmarks() {
         return bookmarkService.list(CurrentUser.require().userId());
@@ -30,12 +31,14 @@ public class BookmarkController {
         return bookmarkService.ids(CurrentUser.require().userId());
     }
 
+    /** POST /api/bookmarks with {"flatId": n} (UC-08). 409 if already bookmarked. */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void addBookmark(@RequestBody Map<String, Long> body) {
         bookmarkService.add(CurrentUser.require().userId(), body.get("flatId"));
     }
 
+    /** DELETE /api/bookmarks/{flatId} (UC-08). */
     @DeleteMapping("/{flatId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeBookmark(@PathVariable long flatId) {

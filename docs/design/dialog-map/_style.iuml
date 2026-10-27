@@ -1,0 +1,10 @@
+!pragma layout smetana
+!theme plain
+hide circle
+hide empty members
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Helvetica
+skinparam roundCorner 4
+skinparam linetype polyline
+skinparam dpi 150

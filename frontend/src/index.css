@@ -1,0 +1,165 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+.hero-bg {
+  background:
+    radial-gradient(1200px 400px at 85% -10%, rgba(246, 196, 83, 0.35), transparent 60%),
+    radial-gradient(900px 380px at 0% 0%, rgba(75, 179, 159, 0.55), transparent 60%),
+    linear-gradient(135deg, #16423c 0%, #1a6258 55%, #1d7a6b 100%);
+}
+
+/* Range sliders with a coloured fill up to the thumb. */
+input[type='range'].range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 22px;
+  background: transparent;
+  cursor: pointer;
+}
+input[type='range'].range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--fill) 0 var(--pct), #e3e6ec var(--pct) 100%);
+}
+input[type='range'].range::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--fill) 0 var(--pct), #e3e6ec var(--pct) 100%);
+}
+input[type='range'].range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  margin-top: -7px;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #fff;
+  border: 2px solid var(--fill);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+}
+input[type='range'].range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: #fff;
+  border: 2px solid var(--fill);
+}
+input[type='range'].range:focus-visible {
+  outline: none;
+}
+input[type='range'].range:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px rgba(29, 122, 107, 0.25);
+}
+
+.anchor-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3));
+}
+.anchor-marker span {
+  display: flex;
+  height: 30px;
+  width: 30px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: white;
+  font: 700 13px Inter, system-ui, sans-serif;
+  border: 3px solid white;
+}
+.anchor-marker::after {
+  content: '';
+  margin-top: -2px;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid white;
+}
+.maplibregl-popup-content {
+  border-radius: 14px !important;
+  padding: 12px 14px !important;
+  box-shadow: 0 8px 30px rgba(23, 26, 33, 0.18) !important;
+}
+.popup-btn {
+  margin-top: 10px;
+  width: 100%;
+  border-radius: 10px;
+  background: #1d7a6b;
+  color: white;
+  font: 600 12px Inter, system-ui, sans-serif;
+  padding: 7px 10px;
+}
+.popup-btn:hover {
+  background: #1a6258;
+}
+
+/* Numbered markers for the top of the ranking. */
+.rank-marker {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.28));
+}
+.rank-marker span,
+.rank-marker-legend {
+  display: flex;
+  height: 24px;
+  min-width: 24px;
+  padding: 0 5px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #fff;
+  color: #16423c;
+  font: 800 12px Inter, system-ui, sans-serif;
+  border: 2px solid #1d7a6b;
+  transition: transform 0.15s;
+}
+.rank-marker-legend {
+  height: 18px;
+  min-width: 18px;
+  font-size: 10px;
+  padding: 0 3px;
+}
+.rank-marker::after {
+  content: '';
+  margin-top: -1px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #1d7a6b;
+}
+.rank-marker.is-first span {
+  background: #1d7a6b;
+  color: #fff;
+}
+.rank-marker.is-active span {
+  background: #0a2622;
+  border-color: #0a2622;
+  color: #fff;
+  transform: scale(1.25);
+}
+.rank-marker.is-active::after {
+  border-top-color: #0a2622;
+}
+.anchor-marker span {
+  width: auto !important;
+  padding: 0 6px;
+  font-size: 11px !important;
+}
+.maplibregl-popup {
+  z-index: 5;
+}
+
+/* Bigger touch area for sliders on phones. */
+@media (max-width: 639px) {
+  input[type='range'].range {
+    height: 44px;
+  }
+}

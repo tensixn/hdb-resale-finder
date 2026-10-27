@@ -1,0 +1,87 @@
+@startuml
+!include _style.iuml
+title Part 3: accounts, bookmarks, comparison and profile (UC-08, UC-09, UC-11, UC-13 to UC-15)
+
+class LoginRateLimiter {
+  #doFilterInternal(request, response, chain)
+}
+class JwtAuthenticationFilter {
+  #doFilterInternal(request, response, chain)
+}
+class AuthController <<boundary>> {
+  +login(req: AuthRequestDto): AuthResponseDto
+  +register(req: RegisterRequestDto): AuthResponseDto
+  +logout()
+  +me(): Map
+}
+class AuthenticationService <<control>> {
+  +register(req: RegisterRequestDto): AuthResponseDto
+  +login(req: AuthRequestDto): AuthResponseDto
+  +logout(sessionId: String)
+  +touchSession(user): Optional<ActiveSession>
+}
+class JwtService {
+  +issue(userId, email, sessionId, expiresAt): String
+  +parse(token): Optional<AuthenticatedUser>
+}
+class Session <<entity>> {
+  -id: String
+  -userId: Long
+  -lastSeenAt, expiresAt: Instant
+  -revoked: boolean
+}
+class User <<entity>> {
+  -email: String
+  -passwordHash: String
+  -role: String
+  -failedAttempts: int
+  -lockedUntil: Instant
+}
+class BookmarkController <<boundary>> {
+  +listBookmarks(): List<BookmarkDto>
+  +addBookmark(body)
+  +removeBookmark(flatId)
+}
+class BookmarkService <<control>> {
+  +list(userId): List<BookmarkDto>
+  +add(userId, flatId)
+  +remove(userId, flatId)
+  +isBookmarked(userId, flatId): boolean
+}
+class Bookmark <<entity>> {
+  -userId: Long
+  -flatId: Long
+  -createdAt: Instant
+}
+class CompareController <<boundary>> {
+  +compareFlats(req: CompareRequestDto): CompareResponseDto
+}
+class CompareService <<control>> {
+  +compare(req: CompareRequestDto, userId): CompareResponseDto
+}
+class ProfileController <<boundary>> {
+  +profile(): ProfileDto
+  +saveFinancial(req: FinancialProfileDto): ProfileDto
+  +deleteFinancial()
+}
+class ProfileService <<control>> {
+  +profile(userId): ProfileDto
+}
+class CpfGrantService <<control>>
+class LivabilityWeightService <<control>>
+
+LoginRateLimiter ..> AuthController : guards login\nand register
+AuthController --> AuthenticationService
+JwtAuthenticationFilter --> AuthenticationService : touchSession
+JwtAuthenticationFilter --> JwtService
+AuthenticationService --> JwtService
+AuthenticationService ..> Session
+AuthenticationService ..> User
+BookmarkController --> BookmarkService
+CompareController --> CompareService
+CompareService --> BookmarkService
+BookmarkService ..> Bookmark
+ProfileController --> ProfileService
+ProfileService --> CpfGrantService
+ProfileService --> LivabilityWeightService
+@enduml

@@ -1,6 +1,9 @@
 package com.abcde.hdbresale.gateway.client;
 
 import com.abcde.hdbresale.config.AppProperties;
+import com.abcde.hdbresale.gateway.ExternalServiceException;
+import com.fasterxml.jackson.databind.JsonNode;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
@@ -25,7 +28,25 @@ public class LtaDataMallClient {
     }
 
     public List<String> trainServiceAlerts() {
-        // TODO (Lab 4): implement trainServiceAlerts
-        throw new UnsupportedOperationException("TODO: LtaDataMallClient.trainServiceAlerts");
+        String key = config.lta().accountKey();
+        if (!config.live() || key == null || key.isBlank()) {
+            return List.of();
+        }
+        try {
+            JsonNode body = http.get().uri("/ltaodataservice/TrainServiceAlerts")
+                    .header("AccountKey", key).header("accept", "application/json")
+                    .retrieve().body(JsonNode.class);
+            JsonNode value = body == null ? null : body.path("value");
+            List<String> alerts = new ArrayList<>();
+            if (value != null && value.path("Status").asInt(1) == 2) {
+                value.path("Message").forEach(m -> alerts.add(m.path("Content").asText()));
+                if (alerts.isEmpty()) {
+                    alerts.add("Train services are disrupted. Public transport times may be longer than shown.");
+                }
+            }
+            return alerts;
+        } catch (RuntimeException e) {
+            throw new ExternalServiceException("LTA DataMall call failed", e);
+        }
     }
 }

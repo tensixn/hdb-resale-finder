@@ -25,6 +25,7 @@ public class LivabilityController {
         return WeightsDto.of(livabilityWeightService.forUser(CurrentUser.optionalId().orElse(null)));
     }
 
+    /** POST /api/livability/weights/adjust (UC-03): sets one factor and rebalances the others to 100%. */
     @PostMapping("/weights/adjust")
     public WeightsDto adjustWeights(@Valid @RequestBody WeightAdjustRequest request) {
         WeightProfile current = request.current() == null ? WeightProfile.defaults() : request.current().toProfile();

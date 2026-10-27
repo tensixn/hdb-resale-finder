@@ -1,7 +1,11 @@
 package com.abcde.hdbresale.service;
 
+import com.abcde.hdbresale.domain.AirQualityReading;
+import com.abcde.hdbresale.domain.CrimeRecord;
+import com.abcde.hdbresale.domain.DensityRecord;
 import com.abcde.hdbresale.domain.Flat;
 import com.abcde.hdbresale.gateway.ExternalApiGateway;
+import com.abcde.hdbresale.gateway.ExternalServiceException;
 import com.abcde.hdbresale.repository.AirQualityReadingRepository;
 import com.abcde.hdbresale.repository.CrimeRecordRepository;
 import com.abcde.hdbresale.repository.DensityRecordRepository;
@@ -9,7 +13,11 @@ import com.abcde.hdbresale.service.strategy.LivabilityFactors;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.DoubleSummaryStatistics;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -62,27 +70,82 @@ public class LivabilityDataService {
     }
 
     public synchronized void reloadStaticData() {
-        // TODO (Lab 4): implement reloadStaticData
+        crimeByTown = crimeRepository.findAll().stream()
+                .collect(Collectors.toMap(CrimeRecord::getTown, CrimeRecord::getRatePerThousand));
+        densityByTown = densityRepository.findAll().stream()
+                .collect(Collectors.toMap(DensityRecord::getTown, DensityRecord::getResidentsPerHa));
+        crimeStats = crimeByTown.values().stream().mapToDouble(Double::doubleValue).summaryStatistics();
+        densityStats = densityByTown.values().stream().mapToDouble(Double::doubleValue).summaryStatistics();
+    }
+
+    private void ensureLoaded() {
+        if (crimeByTown == null) {
+            reloadStaticData();
+        }
     }
 
     public LivabilityFactors factorsFor(Flat flat, PsiSnapshot psiSnapshot) {
-        // TODO (Lab 4): implement factorsFor
-        throw new UnsupportedOperationException("TODO: LivabilityDataService.factorsFor");
+        ensureLoaded();
+        double lease = 100.0 * flat.remainingLeaseYears() / Flat.LEASE_YEARS;
+        double safety = invertedScale(crimeByTown.getOrDefault(flat.getTown(), crimeStats.getAverage()), crimeStats);
+        double density = invertedScale(densityByTown.getOrDefault(flat.getTown(), densityStats.getAverage()), densityStats);
+        int regionPsi = psiSnapshot.byRegion().getOrDefault(flat.getRegion(), DEFAULT_PSI);
+        double air = clamp(100 - 0.8 * regionPsi);
+        return new LivabilityFactors(clamp(lease), safety, density, air);
     }
 
     public double crimeRate(String town) {
-        // TODO (Lab 4): implement crimeRate
-        throw new UnsupportedOperationException("TODO: LivabilityDataService.crimeRate");
+        ensureLoaded();
+        return crimeByTown.getOrDefault(town, crimeStats.getAverage());
     }
 
+    /** Population density for a town, or the all-town average when the town has no record. */
     public double density(String town) {
-        // TODO (Lab 4): implement density
-        throw new UnsupportedOperationException("TODO: LivabilityDataService.density");
+        ensureLoaded();
+        return densityByTown.getOrDefault(town, densityStats.getAverage());
     }
 
     /** Current PSI per region, refreshed from NEA at most once an hour. */
     public PsiSnapshot currentPsi() {
-        // TODO (Lab 4): implement currentPsi
-        throw new UnsupportedOperationException("TODO: LivabilityDataService.currentPsi");
+        PsiSnapshot snapshot = psi;
+        Instant now = Instant.now();
+        if (snapshot != null && !snapshot.possiblyOutdated() && snapshot.fetchedAt().plus(PSI_MAX_AGE).isAfter(now)) {
+            return snapshot;
+        }
+        synchronized (this) {
+            if (psi != null && !psi.possiblyOutdated() && psi.fetchedAt().plus(PSI_MAX_AGE).isAfter(now)) {
+                return psi;
+            }
+            try {
+                Map<String, Integer> fresh = gateway.psiByRegion();
+                writeTx.executeWithoutResult(status -> fresh.forEach(
+                        (region, value) -> psiRepository.save(new AirQualityReading(region, value, now))));
+                psi = new PsiSnapshot(Map.copyOf(fresh), now, false);
+            } catch (ExternalServiceException e) {
+                psi = new PsiSnapshot(lastStoredPsi(), now, true);
+            }
+            return psi;
+        }
+    }
+
+    private Map<String, Integer> lastStoredPsi() {
+        Map<String, Integer> out = new HashMap<>();
+        for (String region : List.of("north", "south", "east", "west", "central")) {
+            Optional<AirQualityReading> r = psiRepository.findFirstByRegionOrderByRecordedAtDesc(region);
+            out.put(region, r.map(AirQualityReading::getPsi).orElse(DEFAULT_PSI));
+        }
+        return out;
+    }
+
+    private static double invertedScale(double value, DoubleSummaryStatistics stats) {
+        double range = stats.getMax() - stats.getMin();
+        if (range <= 0) {
+            return 100;
+        }
+        return clamp(100 - 90 * (value - stats.getMin()) / range);
+    }
+
+    private static double clamp(double v) {
+        return Math.max(0, Math.min(100, v));
     }
 }

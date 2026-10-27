@@ -11,6 +11,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -42,17 +43,26 @@ public class SearchSessionStore {
 
     public StoredSearch put(List<Workplace> anchors, List<TransportMode> modes, List<Entry> entries, int excluded,
                             List<String> warnings) {
-        // TODO (Lab 4): implement put
-        throw new UnsupportedOperationException("TODO: SearchSessionStore.put");
+        StoredSearch s = new StoredSearch(UUID.randomUUID().toString(), anchors, modes, entries, excluded, warnings,
+                Instant.now());
+        searches.put(s.id(), s);
+        return s;
     }
 
     public Optional<StoredSearch> get(String id) {
-        // TODO (Lab 4): implement get
-        throw new UnsupportedOperationException("TODO: SearchSessionStore.get");
+        if (id == null) {
+            return Optional.empty();
+        }
+        StoredSearch s = searches.get(id);
+        if (s == null || s.createdAt().plus(ttl).isBefore(Instant.now())) {
+            return Optional.empty();
+        }
+        return Optional.of(s);
     }
 
     @Scheduled(fixedDelay = 300_000)
     void evictExpired() {
-        // TODO (Lab 4): implement evictExpired
+        Instant cutoff = Instant.now().minus(ttl);
+        searches.values().removeIf(s -> s.createdAt().isBefore(cutoff));
     }
 }

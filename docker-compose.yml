@@ -1,0 +1,41 @@
+# Production-like stack from SRS Section 2.4: app + PostgreSQL/PostGIS + Redis.
+# Run: docker compose up --build   then open http://localhost:8080
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_DB: hdbresale
+      POSTGRES_USER: hdb
+      POSTGRES_PASSWORD: hdb
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hdb -d hdbresale"]
+      interval: 5s
+      retries: 20
+
+  cache:
+    image: redis:7.4-alpine
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_started
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_HOST: db
+      REDIS_HOST: cache
+      EXTERNAL_MODE: ${EXTERNAL_MODE:-offline}
+      ONEMAP_EMAIL: ${ONEMAP_EMAIL:-}
+      ONEMAP_PASSWORD: ${ONEMAP_PASSWORD:-}
+      LTA_ACCOUNT_KEY: ${LTA_ACCOUNT_KEY:-}
+      JWT_SECRET: ${JWT_SECRET:-change-me-to-a-long-random-string-0123456789}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:-ZGV2LW9ubHktYWVzLTI1Ni1rZXktY2hhbmdlLW1lISE=}
+    ports:
+      - "8080:8080"
+
+volumes:
+  db-data:

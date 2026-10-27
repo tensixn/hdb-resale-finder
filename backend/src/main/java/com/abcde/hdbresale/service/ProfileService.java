@@ -1,6 +1,9 @@
 package com.abcde.hdbresale.service;
 
+import com.abcde.hdbresale.domain.User;
 import com.abcde.hdbresale.dto.ProfileDto;
+import com.abcde.hdbresale.dto.WeightsDto;
+import com.abcde.hdbresale.exception.ApiException;
 import com.abcde.hdbresale.repository.SearchCriteriaRepository;
 import com.abcde.hdbresale.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -23,9 +26,16 @@ public class ProfileService {
         this.criteriaRepository = criteriaRepository;
     }
 
+    /** The account page (UC-14): email, saved weights, saved financial profile and last search. */
     @Transactional(readOnly = true)
     public ProfileDto profile(Long userId) {
-        // TODO (Lab 4): implement profile
-        throw new UnsupportedOperationException("TODO: ProfileService.profile");
+        User user = userRepository.findById(userId).orElseThrow(ApiException::unauthenticated);
+        ProfileDto.LastSearch last = criteriaRepository.findFirstByUserIdOrderByCreatedAtDesc(userId)
+                .map(c -> new ProfileDto.LastSearch(c.getWorkplace1(), c.getWorkplace2(), c.getTransportModes(),
+                        c.getMinPrice(), c.getMaxPrice(), c.getFlatTypes(), c.getTowns(), c.getCreatedAt()))
+                .orElse(null);
+        return new ProfileDto(user.getEmail(), user.getCreatedAt(), WeightsDto.of(weightService.forUser(userId)),
+                cpfGrantService.savedProfile(userId).orElse(null),
+                cpfGrantService.savedProfileUpdatedAt(userId).orElse(null), last);
     }
 }

@@ -1,0 +1,68 @@
+@startuml
+!include _style.iuml
+title Part 4: start-up and external integration
+
+class Application <<start-up>> {
+  +{static} main(args: String[])
+}
+class DataSeeder <<start-up>> {
+  +run(args: ApplicationArguments)
+}
+interface ExternalApiGateway <<Facade>> {
+  +geocode(query: String): Optional<GeocodeResult>
+  +travelTime(origin: GeoPoint, dest: GeoPoint, mode: TransportMode): TravelTime
+  +resaleTransactionsSince(month: String): List<ResaleRecord>
+  +psiByRegion(): Map<String, Integer>
+  +trainServiceAlerts(): List<String>
+  +isLive(): boolean
+}
+class CachingApiGatewayProxy <<Proxy>> {
+  -delegate: ApiGatewayImpl
+  -travelCache, geocodeCache: Cache
+  -timeout: Duration
+}
+class ApiGatewayImpl {
+  -oneMap: OneMapClient
+  -lta: LtaDataMallClient
+  -dataGov: DataGovSgClient
+}
+class GeocodeResult <<value>> {
+  label: String
+  location: GeoPoint
+  approximate: boolean
+}
+class TravelTime <<value>> {
+  minutes: int
+  possiblyOutdated: boolean
+}
+class ResaleRecord <<value>> {
+  month, town, flatType: String
+  block, street: String
+  resalePrice: long
+}
+class OneMapClient <<boundary>> {
+  +search(query): Optional<GeocodeResult>
+  +route(origin, dest, mode): int
+}
+class LtaDataMallClient <<boundary>> {
+  +trainServiceAlerts(): List<String>
+}
+class DataGovSgClient <<boundary>> {
+  +resaleTransactionsSince(month): List<ResaleRecord>
+  +psiByRegion(): Map<String, Integer>
+}
+class ExternalServiceException
+
+Application ..> DataSeeder : Spring runs at start-up
+ExternalApiGateway <|.. CachingApiGatewayProxy
+ExternalApiGateway <|.. ApiGatewayImpl
+CachingApiGatewayProxy --> ApiGatewayImpl : delegates on cache miss
+ExternalApiGateway ..> GeocodeResult
+ExternalApiGateway ..> TravelTime
+ExternalApiGateway ..> ResaleRecord
+ApiGatewayImpl --> OneMapClient
+ApiGatewayImpl --> LtaDataMallClient
+ApiGatewayImpl --> DataGovSgClient
+OneMapClient ..> ExternalServiceException : throws
+DataGovSgClient ..> ExternalServiceException : throws
+@enduml

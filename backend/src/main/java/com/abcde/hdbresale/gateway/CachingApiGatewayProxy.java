@@ -7,9 +7,12 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
@@ -49,38 +52,95 @@ public class CachingApiGatewayProxy implements ExternalApiGateway {
 
     @Override
     public Optional<GeocodeResult> geocode(String query) {
-        // TODO (Lab 4): implement geocode
-        throw new UnsupportedOperationException("TODO: CachingApiGatewayProxy.geocode");
+        String key = query.trim().toLowerCase();
+        GeocodeResult cached = geocodeCache.get(key, GeocodeResult.class);
+        if (cached != null) {
+            return Optional.of(cached);
+        }
+        try {
+            Optional<GeocodeResult> result = withTimeout(() -> delegate.geocode(query));
+            result.ifPresent(r -> {
+                geocodeCache.put(key, r);
+                lastKnownGood.put("geo|" + key, r);
+            });
+            return result;
+        } catch (ExternalServiceException e) {
+            return Optional.ofNullable((GeocodeResult) lastKnownGood.get("geo|" + key));
+        }
     }
 
     @Override
     public TravelTime travelTime(GeoPoint origin, GeoPoint destination, TransportMode mode) {
-        // TODO (Lab 4): implement travelTime
-        throw new UnsupportedOperationException("TODO: CachingApiGatewayProxy.travelTime");
+        String key = mode + "|" + origin.key() + "|" + destination.key();
+        TravelTime cached = travelCache.get(key, TravelTime.class);
+        if (cached != null) {
+            return cached;
+        }
+        try {
+            TravelTime fresh = withTimeout(() -> delegate.travelTime(origin, destination, mode));
+            travelCache.put(key, fresh);
+            lastKnownGood.put("tt|" + key, fresh);
+            return fresh;
+        } catch (ExternalServiceException e) {
+            TravelTime stale = (TravelTime) lastKnownGood.get("tt|" + key);
+            if (stale == null) {
+                throw e;
+            }
+            return new TravelTime(stale.minutes(), true);
+        }
     }
 
     @Override
     public List<ResaleRecord> resaleTransactionsSince(String month) {
-        // TODO (Lab 4): implement resaleTransactionsSince
-        throw new UnsupportedOperationException("TODO: CachingApiGatewayProxy.resaleTransactionsSince");
+        // Not cached: the batch job needs the real answer or a clear failure (FR-30).
+        return withTimeout(() -> delegate.resaleTransactionsSince(month), Duration.ofSeconds(60));
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public Map<String, Integer> psiByRegion() {
-        // TODO (Lab 4): implement psiByRegion
-        throw new UnsupportedOperationException("TODO: CachingApiGatewayProxy.psiByRegion");
+        try {
+            Map<String, Integer> fresh = withTimeout(delegate::psiByRegion);
+            lastKnownGood.put("psi", fresh);
+            return fresh;
+        } catch (ExternalServiceException e) {
+            Map<String, Integer> stale = (Map<String, Integer>) lastKnownGood.get("psi");
+            if (stale == null) {
+                throw e;
+            }
+            return stale;
+        }
     }
 
     @Override
     public List<String> trainServiceAlerts() {
-        // TODO (Lab 4): implement trainServiceAlerts
-        throw new UnsupportedOperationException("TODO: CachingApiGatewayProxy.trainServiceAlerts");
+        try {
+            return withTimeout(delegate::trainServiceAlerts);
+        } catch (ExternalServiceException e) {
+            return List.of();
+        }
     }
 
     @Override
     public boolean isLive() {
-        // TODO (Lab 4): implement isLive
-        throw new UnsupportedOperationException("TODO: CachingApiGatewayProxy.isLive");
+        return delegate.isLive();
+    }
+
+    private <T> T withTimeout(Supplier<T> call) {
+        return withTimeout(call, timeout);
+    }
+
+    private <T> T withTimeout(Supplier<T> call, Duration limit) {
+        CompletableFuture<T> future = CompletableFuture.supplyAsync(call, executor);
+        try {
+            return future.get(limit.toMillis(), TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new ExternalServiceException("Interrupted", e);
+        } catch (Exception e) {
+            future.cancel(true);
+            log.warn("External call failed or timed out: {}", e.getClass().getSimpleName());
+            throw new ExternalServiceException("External call failed", e);
+        }
     }
 }

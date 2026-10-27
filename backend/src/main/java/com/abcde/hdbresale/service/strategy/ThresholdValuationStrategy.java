@@ -19,13 +19,21 @@ public class ThresholdValuationStrategy implements ValuationStrategy {
 
     @Override
     public ValuationLabel classify(long price, double fairValue) {
-        // TODO (Lab 4): implement classify
-        throw new UnsupportedOperationException("TODO: ThresholdValuationStrategy.classify");
+        if (fairValue <= 0) {
+            return ValuationLabel.INSUFFICIENT_DATA;
+        }
+        double diff = (price - fairValue) / fairValue;
+        if (diff < -band) {
+            return ValuationLabel.UNDER_VALUED;
+        }
+        if (diff > band) {
+            return ValuationLabel.OVER_VALUED;
+        }
+        return ValuationLabel.FAIR_VALUED;
     }
 
     @Override
     public double fairBand() {
-        // TODO (Lab 4): implement fairBand
-        throw new UnsupportedOperationException("TODO: ThresholdValuationStrategy.fairBand");
+        return band;
     }
 }

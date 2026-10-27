@@ -6,6 +6,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -30,8 +34,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        // TODO (Lab 4): read the Bearer token, check the session with authenticationService.touchSession,
-        // set the SecurityContext and return a renewed token in RENEWED_TOKEN_HEADER
+        String header = request.getHeader("Authorization");
+        if (header != null && header.startsWith("Bearer ")) {
+            jwtService.parse(header.substring(7))
+                    .flatMap(authenticationService::touchSession)
+                    .ifPresent(active -> {
+                        var auth = new UsernamePasswordAuthenticationToken(active.user(), null,
+                                List.of(new SimpleGrantedAuthority("ROLE_HOME_BUYER")));
+                        SecurityContextHolder.getContext().setAuthentication(auth);
+                        if (active.renewedToken() != null) {
+                            response.setHeader(RENEWED_TOKEN_HEADER, active.renewedToken());
+                        }
+                    });
+        }
         chain.doFilter(request, response);
     }
 }

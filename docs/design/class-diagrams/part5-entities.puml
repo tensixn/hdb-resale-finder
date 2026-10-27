@@ -1,0 +1,53 @@
+@startuml
+!include _style.iuml
+title Part 5: persistent entities and multiplicities
+
+package "domain (persisted)" {
+  class AirQualityReading <<entity>> {
+    -region: String
+    -psi: int
+    -recordedAt: Instant
+  }
+  note bottom of AirQualityReading
+    keyed by PSI region
+    (north, south, east, west, central),
+    not by town
+  end note
+  class User <<entity>>
+  class FinancialProfile <<entity>>
+  class WeightProfile <<entity>>
+  class SearchCriteria <<entity>>
+  class Bookmark <<entity>>
+  class Session <<entity>>
+  class Flat <<entity>> {
+    -block, street, town: String
+    -flatType: String
+    -floorAreaSqm: double
+    -leaseCommenceYear: int
+    -latitude, longitude: double
+    -latestPrice: Long
+    +remainingLeaseYears(): int
+  }
+  class ValuationBatchJob <<entity>>
+  class Transaction <<entity>>
+  class CrimeRecord <<entity>>
+  class School <<entity>>
+  class ValuationBaseline <<entity>>
+  class DensityRecord <<entity>>
+  class Town <<entity>>
+}
+
+User "1" -- "0..1" FinancialProfile
+User "1" -- "0..1" WeightProfile
+User "1" -- "0..*" SearchCriteria
+User "1" -- "0..*" Bookmark
+User "1" -- "0..*" Session
+Bookmark "0..*" -- "1" Flat
+Flat "1" -- "1..*" Transaction
+ValuationBatchJob "1" ..> "0..*" Transaction : ingests
+Flat "0..*" -- "1" Town
+CrimeRecord "0..*" -- "1" Town
+School "0..*" -- "1" Town
+ValuationBaseline "0..*" -- "1" Town : per town and flat type
+DensityRecord "0..*" -- "1" Town
+@enduml

@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,7 +37,25 @@ public class LoginRateLimiter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        // TODO (Lab 4): count attempts per client IP and answer 429 once the TBD-4 limit is passed
+        long now = System.currentTimeMillis();
+        Deque<Long> window = hits.computeIfAbsent(request.getRemoteAddr(), k -> new ArrayDeque<>());
+        boolean allowed;
+        synchronized (window) {
+            while (!window.isEmpty() && now - window.peekFirst() > WINDOW_MS) {
+                window.pollFirst();
+            }
+            allowed = window.size() < LIMIT;
+            if (allowed) {
+                window.addLast(now);
+            }
+        }
+        if (!allowed) {
+            response.setStatus(429);
+            response.setContentType("application/json");
+            objectMapper.writeValue(response.getOutputStream(),
+                    Map.of("code", "RATE_LIMITED", "message", "Too many attempts. Please wait a minute and try again."));
+            return;
+        }
         chain.doFilter(request, response);
     }
 }

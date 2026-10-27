@@ -29,37 +29,31 @@ public class ApiGatewayImpl implements ExternalApiGateway {
 
     @Override
     public Optional<GeocodeResult> geocode(String query) {
-        // TODO (Lab 4): implement geocode
-        throw new UnsupportedOperationException("TODO: ApiGatewayImpl.geocode");
+        return oneMap.search(query);
     }
 
     @Override
     public TravelTime travelTime(GeoPoint origin, GeoPoint destination, TransportMode mode) {
-        // TODO (Lab 4): implement travelTime
-        throw new UnsupportedOperationException("TODO: ApiGatewayImpl.travelTime");
+        return new TravelTime(oneMap.route(origin, destination, mode), false);
     }
 
     @Override
     public List<ResaleRecord> resaleTransactionsSince(String month) {
-        // TODO (Lab 4): implement resaleTransactionsSince
-        throw new UnsupportedOperationException("TODO: ApiGatewayImpl.resaleTransactionsSince");
+        return dataGov.resaleTransactionsSince(month);
     }
 
     @Override
     public Map<String, Integer> psiByRegion() {
-        // TODO (Lab 4): implement psiByRegion
-        throw new UnsupportedOperationException("TODO: ApiGatewayImpl.psiByRegion");
+        return dataGov.psiByRegion();
     }
 
     @Override
     public List<String> trainServiceAlerts() {
-        // TODO (Lab 4): implement trainServiceAlerts
-        throw new UnsupportedOperationException("TODO: ApiGatewayImpl.trainServiceAlerts");
+        return lta.trainServiceAlerts();
     }
 
     @Override
     public boolean isLive() {
-        // TODO (Lab 4): implement isLive
-        throw new UnsupportedOperationException("TODO: ApiGatewayImpl.isLive");
+        return properties.external().live();
     }
 }
