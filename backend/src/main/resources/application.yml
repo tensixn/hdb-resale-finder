@@ -1,0 +1,109 @@
+# HDB Resale Flat Search and Analysis System - backend configuration.
+# The default profile runs fully offline with an embedded H2 database (PostgreSQL mode) and an in-memory
+# cache, so `mvn spring-boot:run` works with nothing else installed. The `docker` profile switches to
+# PostgreSQL + PostGIS and Redis, matching the production stack in SRS Section 2.4.
+
+server:
+  port: ${PORT:8080}
+  error:
+    include-message: never
+
+spring:
+  application:
+    name: hdbresale
+  config:
+    import: classpath:grant-rules.yml
+  datasource:
+    url: jdbc:h2:file:${DATA_DIR:./data}/hdbresale;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=FALSE
+    username: sa
+    password:
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.jdbc.batch_size: 100
+  flyway:
+    enabled: true
+  cache:
+    type: simple
+    cache-names: travelTimes,geocode
+  data:
+    redis:
+      repositories:
+        enabled: false
+  jackson:
+    default-property-inclusion: always
+    serialization:
+      write-dates-as-timestamps: false
+
+management:
+  health:
+    redis:
+      enabled: false
+
+app:
+  cors-origins:
+    - http://localhost:5173
+    - http://127.0.0.1:5173
+  allow-manual-refresh: true
+  security:
+    # Development defaults only. Override both with environment variables outside your own machine.
+    jwt-secret: ${JWT_SECRET:dev-only-change-me-0123456789abcdef0123456789}
+    encryption-key: ${ENCRYPTION_KEY:ZGV2LW9ubHktYWVzLTI1Ni1rZXktY2hhbmdlLW1lISE=}
+    token-ttl: 30m          # TBD-5: idle timeout, token renewed while active
+    session-max: 8h         # TBD-5: absolute session limit
+    max-failed-logins: 5    # TBD-4
+    lock-duration: 15m      # TBD-4
+  search:
+    max-results: 500        # NFR-1
+    result-set-ttl: 60m
+  valuation:
+    fair-band-percent: 5    # TBD-1
+    window-months: 6        # FR-9
+    min-sample-size: 3      # UC-05.EX.1
+    refresh-cron: "0 0 3 * * *"   # FR-28: daily at 03:00 SGT
+  external:
+    mode: ${EXTERNAL_MODE:offline}   # offline | live
+    timeout: 2s                       # NFR-3
+    onemap:
+      base-url: https://www.onemap.gov.sg
+      email: ${ONEMAP_EMAIL:}
+      password: ${ONEMAP_PASSWORD:}
+    lta:
+      base-url: https://datamall2.mytransport.sg
+      account-key: ${LTA_ACCOUNT_KEY:}
+    datagov:
+      base-url: https://data.gov.sg
+      resale-resource-id: d_8b84c4ee58e3cfc0ece0d773c8ca6abc
+      psi-url: https://api-open.data.gov.sg/v2/real-time/api/psi
+
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: WARN
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:hdbresale}
+    username: ${DB_USER:hdb}
+    password: ${DB_PASSWORD:hdb}
+  cache:
+    type: redis
+    redis:
+      time-to-live: 6h
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+management:
+  health:
+    redis:
+      enabled: true
+app:
+  cors-origins:
+    - http://localhost:8080

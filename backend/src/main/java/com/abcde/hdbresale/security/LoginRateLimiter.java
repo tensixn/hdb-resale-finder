@@ -1,0 +1,42 @@
+package com.abcde.hdbresale.security;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Deque;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+/** Slows down password guessing: at most 20 login/register calls per minute per client address (Section 3.4 item 5). */
+@Component
+public class LoginRateLimiter extends OncePerRequestFilter {
+
+    private static final int LIMIT = 20;
+    private static final long WINDOW_MS = 60_000;
+
+    private final Map<String, Deque<Long>> hits = new ConcurrentHashMap<>();
+    private final ObjectMapper objectMapper;
+
+    public LoginRateLimiter(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        return !("POST".equals(request.getMethod())
+                && (path.equals("/api/auth/login") || path.equals("/api/auth/register")));
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws ServletException, IOException {
+        // TODO (Lab 4): count attempts per client IP and answer 429 once the TBD-4 limit is passed
+        chain.doFilter(request, response);
+    }
+}

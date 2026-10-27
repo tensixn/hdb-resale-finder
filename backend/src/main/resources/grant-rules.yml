@@ -1,0 +1,41 @@
+# CPF housing grant rules for resale flats (UC-06, assumption A-6).
+# Kept outside the code so they can be updated when HDB changes them.
+# CHECK THESE AGAINST https://www.hdb.gov.sg/residential/buying-a-flat/understanding-your-eligibility-and-housing-loan-options/flat-and-grant-eligibility
+# BEFORE RELYING ON THEM. They are the team's reading of the published tables and may be out of date.
+grants:
+  effective-from: "20 Aug 2024"
+  source: "hdb.gov.sg grant tables"
+  ehg:
+    family-income-ceiling: 9000
+    # Families and couples: monthly household income up to max-income gets amount.
+    # Singles get half the amount at double their income (e.g. a single earning $1,500 is treated as $3,000).
+    family-bands:
+      - { max-income: 1500, amount: 120000 }
+      - { max-income: 2000, amount: 110000 }
+      - { max-income: 2500, amount: 105000 }
+      - { max-income: 3000, amount: 95000 }
+      - { max-income: 3500, amount: 90000 }
+      - { max-income: 4000, amount: 80000 }
+      - { max-income: 4500, amount: 70000 }
+      - { max-income: 5000, amount: 65000 }
+      - { max-income: 5500, amount: 55000 }
+      - { max-income: 6000, amount: 50000 }
+      - { max-income: 6500, amount: 40000 }
+      - { max-income: 7000, amount: 30000 }
+      - { max-income: 7500, amount: 25000 }
+      - { max-income: 8000, amount: 20000 }
+      - { max-income: 8500, amount: 10000 }
+      - { max-income: 9000, amount: 5000 }
+  phg:
+    proximity-km: 4
+    family-live-with: 30000
+    family-near: 20000
+    single-live-with: 15000
+    single-near: 10000
+  loan:
+    lender: "HDB concessionary loan"
+    interest-rate-percent: 2.6
+    tenure-years: 25
+    down-payment-percent: 25
+    max-loan-to-value-percent: 75
+  msr-percent: 30
