@@ -8,3 +8,4 @@ backend/src/main/resources/static/
 .idea/
 .vscode/
 qa-shots/
+*.tsbuildinfo
