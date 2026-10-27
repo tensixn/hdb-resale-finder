@@ -1,0 +1,161 @@
+@startuml uc01-uc06
+title UC-01 (Search Flats by Dual-Anchor) and UC-06 (Calculate CPF Grant and Affordability) - boundary, control and entity classes
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+' ---------------- UC-01 : search ----------------
+class SearchController <<boundary>> {
+  + search(req: SearchRequest): SearchResultDto
+  + filter(searchId: String, req: FilterRequest): SearchResultDto
+}
+
+class FlatSearchService <<control>> {
+  - maxResults: int
+  + search(req: SearchRequest, userId: Long): SearchResultDto
+  + view(searchId: String, filter: FilterRequest): SearchResultDto
+  + requireSearch(searchId: String): StoredSearch
+  + findSearch(searchId: String): Optional<StoredSearch>
+}
+
+class CommuteCalculationService <<control>> {
+  + {static} scoreFor(minutes: int): double
+  + calculate(flats: List<Flat>, anchors: List<Workplace>, modes: List<TransportMode>): Map<Long, CommuteScore>
+  + forFlat(flat: Flat, anchors: List<Workplace>, modes: List<TransportMode>): CommuteScore
+}
+
+class LivabilityDataService <<control>> {
+  + factorsFor(flat: Flat, psi: PsiSnapshot): LivabilityFactors
+  + currentPsi(): PsiSnapshot
+  + crimeRate(town: String): double
+  + density(town: String): double
+  + reloadStaticData(): void
+}
+
+class LivabilityWeightService <<control>> {
+  + rebalance(current: WeightProfile, changed: LivabilityFactor, value: double): WeightProfile
+  + normalise(w: WeightProfile): WeightProfile
+  + forUser(userId: Long): WeightProfile
+  + saveForUser(userId: Long, weights: WeightProfile): void
+}
+
+class SearchSessionStore <<control>> {
+  - ttl: Duration
+  + put(anchors: List<Workplace>, modes: List<TransportMode>, entries: List<Entry>, excluded: int, warnings: List<String>): StoredSearch
+  + get(id: String): Optional<StoredSearch>
+}
+
+class ValuationService <<control>> {
+  + labelFor(flat: Flat): ValuationLabel
+  + fairValueFor(flat: Flat): Optional<Long>
+  + valuationFor(flat: Flat): ValuationDto
+}
+
+class Flat <<entity>> {
+  - id: Long
+  - block: String
+  - street: String
+  - town: String
+  - flatType: String
+  - floorAreaSqm: double
+  - storeyRange: String
+  - leaseCommenceYear: int
+  - latitude: double
+  - longitude: double
+  - region: String
+  - latestPrice: Long
+  - latestMonth: String
+  + {static} LEASE_YEARS: int = 99
+  + remainingLeaseYears(): int
+  + address(): String
+  + location(): GeoPoint
+  + applyTransaction(month: String, price: long): void
+}
+
+class WeightProfile <<entity>> {
+  - id: Long
+  - userId: Long
+  - leaseWeight: double
+  - safetyWeight: double
+  - densityWeight: double
+  - airQualityWeight: double
+  - updatedAt: Instant
+  + {static} defaults(): WeightProfile
+  + get(factor: LivabilityFactor): double
+  + set(factor: LivabilityFactor, value: double): void
+  + total(): double
+  + copyFrom(other: WeightProfile): void
+}
+
+class SearchCriteria <<entity>> {
+  - id: Long
+  - userId: Long
+  - workplace1: String
+  - workplace2: String
+  - transportModes: String
+  - minPrice: Long
+  - maxPrice: Long
+  - flatTypes: String
+  - towns: String
+  - createdAt: Instant
+}
+
+' ---------------- UC-06 : CPF grant and affordability ----------------
+class CpfController <<boundary>> {
+  + submitFinancialProfile(): ResponseEntity<FinancialProfileDto>
+  + calculateGrant(req: CpfGrantRequestDto): CpfGrantResponseDto
+}
+
+class CpfGrantService <<control>> {
+  + estimate(req: CpfGrantRequestDto, userId: Long): CpfGrantResponseDto
+  + savedProfile(userId: Long): Optional<FinancialProfileDto>
+  + savedProfileUpdatedAt(userId: Long): Optional<Instant>
+  + saveProfile(userId: Long, dto: FinancialProfileDto): void
+  + deleteProfile(userId: Long): void
+}
+
+class PostalSectorDirectory <<control>> {
+  + {static} isPostalCode(text: String): boolean
+  + locate(postalCode: String): Optional<GeoPoint>
+  + areaName(postalCode: String): Optional<String>
+}
+
+class FinancialProfile <<entity>> {
+  - id: Long
+  - userId: Long {unique}
+  - householdIncome: String {encrypted, AES-256-GCM}
+  - maritalStatus: MaritalStatus
+  - parentPostalCode: String {encrypted, AES-256-GCM}
+  - livingWithParents: boolean
+  - updatedAt: Instant
+  + getHouseholdIncome(): long
+  + setHouseholdIncome(income: long): void
+  + getMaritalStatus(): MaritalStatus
+  + setMaritalStatus(status: MaritalStatus): void
+  + getParentPostalCode(): String
+  + setParentPostalCode(code: String): void
+  + isLivingWithParents(): boolean
+  + setLivingWithParents(value: boolean): void
+  + getUpdatedAt(): Instant
+  + setUpdatedAt(at: Instant): void
+}
+
+' ---------------- Associations (UC-01) ----------------
+SearchController "1" --> "1" FlatSearchService : delegates search and filter
+FlatSearchService "1" --> "1" CommuteCalculationService : commute per flat and anchor
+FlatSearchService "1" --> "1" LivabilityDataService : factors and PSI
+FlatSearchService "1" --> "1" LivabilityWeightService : weights
+FlatSearchService "1" --> "1" ValuationService : label per result
+FlatSearchService "1" --> "1" SearchSessionStore : stores result set
+FlatSearchService "1" ..> "0..1" SearchCriteria : saves last search (signed-in only)
+FlatSearchService "1" -- "0..*" Flat : candidate flats
+CommuteCalculationService "1" ..> "0..*" Flat : commute computed for
+LivabilityDataService "1" ..> "0..*" Flat : scored
+ValuationService "1" ..> "0..*" Flat : labelled
+LivabilityWeightService "1" ..> "0..*" WeightProfile : one row per signed-in user
+
+' ---------------- Associations (UC-06) ----------------
+CpfController "1" --> "1" CpfGrantService : delegates
+CpfGrantService "1" --> "1" PostalSectorDirectory : parent postal code to point (offline)
+CpfGrantService "1" --> "0..1" FinancialProfile : saved profile (one per user)
+CpfGrantService "1" ..> "0..*" Flat : estimate for one flat (looked up by flatId)
+@enduml

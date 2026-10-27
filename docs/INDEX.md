@@ -36,11 +36,10 @@ the sources use PlantUML's built-in layout).
 
 | Work product | Author(s) |
 |---|---|
-| SRS and use case model | _fill in_ |
-| Class diagrams and dialog map | _fill in_ |
-| Backend | _fill in_ |
-| Frontend | _fill in_ |
-| Tests and test report | _fill in_ |
-| Demo script and video | _fill in_ |
+| SRS and use case model | Roen, Aleesha, Manwen, Jing Yi, Junyao |
+| Class diagrams and dialog map | Roen, Aleesha, Manwen, Jing Yi, Junyao |
+| Backend | Roen, Aleesha, Manwen, Jing Yi, Junyao |
+| Frontend | Roen, Aleesha, Manwen, Jing Yi, Junyao |
+| Tests and test report | Roen, Aleesha, Manwen, Jing Yi, Junyao |
+| Demo script and video | Roen, Aleesha, Manwen, Jing Yi, Junyao |
 
-Team: Roen, Aleesha, Manwen, Jing Yi, Junyao.
