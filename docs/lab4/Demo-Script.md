@@ -5,8 +5,8 @@ subtitle: "HDB Resale Flat Search and Analysis System (HomeMatch SG), Team ABCDE
 
 | Work product | Author(s) |
 |---|---|
-| Demo script | _fill in_ |
-| Video | _fill in_ |
+| Demo script | Roen, Aleesha, Manwen, Jing Yi, Junyao |
+| Video | Roen, Aleesha, Manwen, Jing Yi, Junyao |
 
 ## 1. The pitch in one line
 

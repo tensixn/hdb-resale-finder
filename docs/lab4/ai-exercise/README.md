@@ -7,6 +7,9 @@ The reflections in 3.3.4 must describe what **your team** actually did and saw, 
 finished reflection. It gives you the setup, prompts and a way to measure the result, so the exercises take about an
 hour, and a template to write up afterwards.
 
+> **27 Oct 2026:** both exercises were run once with a coding agent. What happened is recorded in
+> [results/RESULTS-LOG.md](results/RESULTS-LOG.md), with questions for the reflections. That run used Claude Haiku, not Cline.
+
 ## Exercise 1 (3.3.2): regenerate the control class from its tests
 
 The class is `CpfGrantService`, the same control class used for black-box testing in 3.2.1.
@@ -117,4 +120,4 @@ Write one for each exercise. Cover every bullet; the marker looks for them.
 - **Did it meet our expectations?** Better or worse than expected, and why.
 - **If it failed, what could be done differently:** smaller tasks, a skeleton, more context, a stronger model, splitting
   the class, writing more tests first.
-- **Author(s):** _names_
+- **Author(s):** Roen, Aleesha, Manwen, Jing Yi, Junyao

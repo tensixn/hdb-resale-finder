@@ -1,6 +1,6 @@
 # HomeMatch SG: HDB Resale Flat Search and Analysis System
 
-SC2006 Team ABCDE. A working implementation of SRS v1.2 and Use Cases v1.2 (UC-01 to UC-15).
+SC2006 Team ABCDE. A working implementation of SRS v1.4 and Use Cases v1.2 (UC-01 to UC-15).
 
 Enter where you and your partner work, and the app ranks HDB resale flats by commute to both places and by a
 Livability Index you can re-weight. Each flat shows whether its last sale price was fair for its estate, and

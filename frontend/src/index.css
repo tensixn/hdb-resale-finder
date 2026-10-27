@@ -208,3 +208,5 @@ input[type='range'].range:focus-visible::-webkit-slider-thumb {
 .dark .text-brand-700, .dark .text-brand-600 { color: #7fcfbd; }
 .dark .bg-rose-50 { background-color: #3b1219; }
 .dark .text-rose-700, .dark .text-rose-600 { color: #fda4af; }
+/* bg-ink-900 turns near-white in dark mode, so white text on it would vanish (selected preset, step numbers, tooltips, toasts). */
+.dark .bg-ink-900.text-white { color: rgb(var(--ink-50)); }

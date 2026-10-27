@@ -5,9 +5,9 @@ subtitle: "HDB Resale Flat Search and Analysis System (HomeMatch SG), Team ABCDE
 
 | Work product | Author(s) |
 |---|---|
-| Black-box test design and `CpfGrantServiceBlackBoxTest` | _fill in_ |
-| Basis path test design and the two `*BasisPathTest` classes | _fill in_ |
-| Test execution and this report | _fill in_ |
+| Black-box test design and `CpfGrantServiceBlackBoxTest` | Roen, Aleesha, Manwen, Jing Yi, Junyao |
+| Basis path test design and the two `*BasisPathTest` classes | Roen, Aleesha, Manwen, Jing Yi, Junyao |
+| Test execution and this report | Roen, Aleesha, Manwen, Jing Yi, Junyao |
 
 ## 1. Scope and how to run
 
@@ -224,7 +224,7 @@ caught, then the code was restored.
 - Tests replace the database and external APIs with Mockito mocks, so they check the logic, not the SQL or the real
   government APIs. `ApiFlowTest` covers the full HTTP stack against an embedded H2 database.
 - Grant amounts are tested against `grant-rules.yml`, so the file itself was checked on 27 Oct 2026. The EHG table for
-  families, HDB's own EHG table for singles and the PHG amounts all match. The CPF Housing Grant (Family Grant / Singles Grant) for resale flats was missing, so it was added on 27 Oct 2026 (BB-01 to BB-11 and BB-28 cover it). FR-11 in the SRS should be updated to name it.
+  families, HDB's own EHG table for singles and the PHG amounts all match. The CPF Housing Grant (Family Grant / Singles Grant) for resale flats was missing, so it was added on 27 Oct 2026 (BB-01 to BB-11 and BB-28 cover it). SRS v1.4 (in `docs/requirements/`) is the version these tests trace to; its FR-11 names this grant.
 - **Finding: the screen and the API disagree on loan limits.** The CPF panel's sliders allow tenure 5 to 25 years,
   down payment 25% to 60% and interest 1% to 5%, but the API accepts tenure up to 30 years, down payment 0% to 100% and
   interest 0% to 10% (BB-08, BB-09, BB-21 pass at the API). Nothing breaks, but the two should match. If the team decides

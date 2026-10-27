@@ -5,9 +5,9 @@ subtitle: "HDB Resale Flat Search and Analysis System (HomeMatch SG), Team ABCDE
 
 | Work product | Author(s) |
 |---|---|
-| Demo script | _fill in_ |
-| Slides (SE practices, traceability) | _fill in_ |
-| Demo video | _fill in_ |
+| Demo script | Roen, Aleesha, Manwen, Jing Yi, Junyao |
+| Slides (SE practices, traceability) | Roen, Aleesha, Manwen, Jing Yi, Junyao |
+| Demo video | Roen, Aleesha, Manwen, Jing Yi, Junyao |
 
 This replaces the Lab 4 demo script. Lab 5 gives each team about **20 minutes**: 13 to 15 minutes of live demo, 2 to 3
 minutes on SE practices and design, and 2 to 3 minutes showing traceability for one or two use cases (manual 3.1.4 to
