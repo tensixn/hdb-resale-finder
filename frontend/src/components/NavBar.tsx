@@ -1,4 +1,5 @@
-import { Bookmark, CircleHelp, Search, UserRound } from 'lucide-react';
+import { Bookmark, CircleHelp, Moon, Search, Sun, UserRound } from 'lucide-react';
+import { useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../state/authStore';
 import { useSearch } from '../state/searchStore';
@@ -25,6 +26,21 @@ export function Logo() {
   );
 }
 
+function ThemeToggle() {
+  const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'));
+  const toggle = () => {
+    const next = !dark;
+    document.documentElement.classList.toggle('dark', next);
+    try { localStorage.theme = next ? 'dark' : 'light'; } catch { /* private mode */ }
+    setDark(next);
+  };
+  return (
+    <button type="button" onClick={toggle} aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'} className="flex h-11 w-11 items-center justify-center rounded-lg text-ink-500 hover:bg-ink-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 md:h-9 md:w-9">
+      {dark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+    </button>
+  );
+}
+
 /** Top bar on wider screens; on phones the same three tabs move to a bottom bar (SRS 3.1). */
 export function NavBar() {
   const { pathname } = useLocation();
@@ -32,7 +48,7 @@ export function NavBar() {
   const hasResults = useSearch((s) => s.searchId !== null);
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-ink-900/5 bg-white/90 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b border-ink-900/5 bg-white/90 backdrop-blur dark:bg-ink-100/90">
         <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-4 lg:px-6">
           <Logo />
           <nav className="hidden items-center gap-1 md:flex">
@@ -62,6 +78,7 @@ export function NavBar() {
             </NavLink>
           </nav>
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             {email ? (
               <Link to="/profile" className="flex items-center gap-2 rounded-full bg-ink-100 py-1 pl-1 pr-3 text-sm text-ink-700 hover:bg-ink-200">
                 <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-600 text-xs font-bold uppercase text-white">
@@ -80,7 +97,7 @@ export function NavBar() {
           </div>
         </div>
       </header>
-      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-ink-900/10 bg-white pb-[env(safe-area-inset-bottom)] md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-ink-900/10 bg-white dark:bg-ink-100 pb-[env(safe-area-inset-bottom)] md:hidden">
         <div className="grid grid-cols-3">
           {tabs.map((t) => {
             const to = t.to === '/' && hasResults ? '/results' : t.to;

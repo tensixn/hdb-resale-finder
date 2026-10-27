@@ -3,6 +3,33 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --ink-50: 246 247 249;
+    --ink-100: 236 238 242;
+    --ink-200: 213 217 226;
+    --ink-300: 177 184 199;
+    --ink-400: 135 145 167;
+    --ink-500: 104 115 140;
+    --ink-600: 83 92 115;
+    --ink-700: 68 75 94;
+    --ink-800: 59 65 80;
+    --ink-900: 42 46 56;
+    --ink-950: 23 26 33;
+  }
+  .dark {
+    color-scheme: dark;
+    --ink-50: 23 26 33;
+    --ink-100: 42 46 56;
+    --ink-200: 59 65 80;
+    --ink-300: 68 75 94;
+    --ink-400: 83 92 115;
+    --ink-500: 104 115 140;
+    --ink-600: 135 145 167;
+    --ink-700: 177 184 199;
+    --ink-800: 213 217 226;
+    --ink-900: 236 238 242;
+    --ink-950: 246 247 249;
+  }
   html {
     -webkit-tap-highlight-color: transparent;
   }
@@ -163,3 +190,11 @@ input[type='range'].range:focus-visible::-webkit-slider-thumb {
     height: 44px;
   }
 }
+
+/* Dark mode: ink scale is inverted via variables; patch the fixed colours. */
+.dark .bg-white { background-color: rgb(33 37 46); }
+.dark .bg-brand-50 { background-color: #0a2622; }
+.dark .bg-brand-100 { background-color: #16423c; }
+.dark .text-brand-700, .dark .text-brand-600 { color: #7fcfbd; }
+.dark .bg-rose-50 { background-color: #3b1219; }
+.dark .text-rose-700, .dark .text-rose-600 { color: #fda4af; }

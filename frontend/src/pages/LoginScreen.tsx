@@ -1,4 +1,4 @@
-import { LogIn } from 'lucide-react';
+import { Eye, EyeOff, LogIn } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { api, ApiError } from '../api/apiClient';
@@ -15,6 +15,7 @@ export default function LoginScreen() {
   const signIn = useAuth((s) => s.signIn);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [show, setShow] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -45,7 +46,12 @@ export default function LoginScreen() {
           <input id="email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass(errors.email)} autoFocus />
         </Field>
         <Field label="Password" htmlFor="password" error={errors.password}>
-          <input id="password" type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} className={inputClass(errors.password)} />
+          <div className="relative">
+            <input id="password" type={show ? 'text' : 'password'} autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} className={`${inputClass(errors.password)} pr-11`} />
+            <button type="button" onClick={() => setShow(!show)} aria-label={show ? 'Hide password' : 'Show password'} aria-pressed={show} className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-ink-500 hover:text-ink-900">
+              {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
         </Field>
         {error && (
           <p className="rounded-xl bg-rose-50 px-3 py-2.5 text-sm text-rose-700" role="alert">

@@ -1,4 +1,4 @@
-import { UserPlus } from 'lucide-react';
+import { Eye, EyeOff, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { api, ApiError } from '../api/apiClient';
@@ -16,6 +16,7 @@ export default function SignupScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
+  const [show, setShow] = useState(false);
   const [consent, setConsent] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
@@ -47,10 +48,15 @@ export default function SignupScreen() {
           <input id="email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass(errors.email)} autoFocus />
         </Field>
         <Field label="Password" htmlFor="password" error={errors.password} hint="At least 8 characters with a letter and a number">
-          <input id="password" type="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} className={inputClass(errors.password)} />
+          <div className="relative">
+            <input id="password" type={show ? 'text' : 'password'} autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} className={`${inputClass(errors.password)} pr-11`} />
+            <button type="button" onClick={() => setShow(!show)} aria-label={show ? 'Hide passwords' : 'Show passwords'} aria-pressed={show} className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-ink-500 hover:text-ink-900">
+              {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
         </Field>
         <Field label="Confirm password" htmlFor="confirm" error={errors.confirmPassword}>
-          <input id="confirm" type="password" autoComplete="new-password" value={confirm} onChange={(e) => setConfirm(e.target.value)} className={inputClass(errors.confirmPassword)} />
+          <input id="confirm" type={show ? 'text' : 'password'} autoComplete="new-password" value={confirm} onChange={(e) => setConfirm(e.target.value)} className={inputClass(errors.confirmPassword)} />
         </Field>
         <div>
           <label className="flex items-start gap-2.5 rounded-xl bg-ink-50 p-3 text-xs leading-relaxed text-ink-600">
