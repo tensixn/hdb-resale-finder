@@ -1,4 +1,4 @@
-import { Bike, Bus, Car, Footprints, Star } from 'lucide-react';
+import { Bike, Bus, Car, Footprints, Star } from './icons';
 import type { Anchor, RankedFlat, TransportMode } from '../types/models';
 import { flatTypeLabel, moneyShort, titleCase } from '../lib/format';
 import { ScoreRing } from './ScoreRing';
@@ -69,7 +69,7 @@ export function FlatCard({
               aria-pressed={bookmarked}
               className={`-mr-1 -mt-1 rounded-lg p-1.5 transition ${bookmarked ? 'text-amber-500' : 'text-ink-300 hover:bg-ink-50 hover:text-ink-500'}`}
             >
-              <Star className="h-5 w-5" fill={bookmarked ? 'currentColor' : 'none'} />
+              <Star className="h-5 w-5" weight={bookmarked ? 'fill' : 'regular'} />
             </button>
           </div>
 
@@ -91,7 +91,7 @@ export function FlatCard({
                   title={`${a?.label ?? 'Workplace'}: ${leg.minutes} min`}
                   className="inline-flex max-w-full items-center gap-1.5 rounded-lg bg-ink-50 px-2 py-1 text-xs text-ink-700"
                 >
-                  <span className={`flex h-4 w-4 items-center justify-center rounded text-[9px] font-bold text-white ${leg.anchorIndex === 0 ? 'bg-ink-900' : 'bg-violet-600'}`}>
+                  <span className={`flex h-4 w-4 items-center justify-center rounded text-[9px] font-bold text-white ${leg.anchorIndex === 0 ? 'bg-ink-900' : 'bg-[#a8472f]'}`}>
                     {leg.anchorIndex + 1}
                   </span>
                   <Icon className="h-3.5 w-3.5 text-ink-500" />

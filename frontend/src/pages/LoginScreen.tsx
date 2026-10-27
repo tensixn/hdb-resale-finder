@@ -1,4 +1,4 @@
-import { Eye, EyeOff, LogIn } from 'lucide-react';
+import { Eye, EyeOff, LogIn } from '../components/icons';
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { api, ApiError } from '../api/apiClient';
@@ -85,7 +85,7 @@ export function AuthLayout({ title, subtitle, children }: { title: string; subti
           <div className="mb-6 md:hidden">
             <Logo />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
+          <h1 className="font-display text-3xl font-semibold tracking-tight">{title}</h1>
           <p className="mt-1 text-sm text-ink-500">{subtitle}</p>
         </div>
         {children}

@@ -1,4 +1,4 @@
-import { LogOut, Pencil, Search, ShieldCheck, Trash2, UserRound, Wallet } from 'lucide-react';
+import { LogOut, Pencil, Search, ShieldCheck, Trash2, UserRound, Wallet } from '../components/icons';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api, ApiError } from '../api/apiClient';

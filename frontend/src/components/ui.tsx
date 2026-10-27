@@ -1,4 +1,4 @@
-import { Info, Loader2 } from 'lucide-react';
+import { Info, Loader2 } from './icons';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { useId, useState } from 'react';
 
@@ -24,7 +24,7 @@ export function Button({
     <button
       {...rest}
       disabled={rest.disabled || loading}
-      className={`inline-flex items-center justify-center rounded-xl font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed ${VARIANTS[variant]} ${sizes[size]} ${className}`}
+      className={`inline-flex items-center justify-center rounded-xl font-semibold transition duration-200 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed ${VARIANTS[variant]} ${sizes[size]} ${className}`}
     >
       {loading && <Loader2 className="h-4 w-4 animate-spin" />}
       {children}
@@ -61,7 +61,7 @@ export function Chip({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`inline-flex h-11 items-center gap-1.5 rounded-full px-3.5 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 sm:h-9 ${
+      className={`inline-flex h-11 items-center gap-1.5 rounded-full px-3.5 text-sm font-medium transition duration-200 active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 sm:h-9 ${
         active ? 'bg-brand-600 text-white shadow-sm' : 'bg-white text-ink-700 ring-1 ring-inset ring-ink-200 hover:ring-ink-300'
       }`}
     >

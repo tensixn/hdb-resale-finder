@@ -1,4 +1,4 @@
-import { RotateCcw } from 'lucide-react';
+import { RotateCcw } from './icons';
 import { useEffect, useState } from 'react';
 import { FACTORS } from '../lib/format';
 import type { LivabilityFactor, Weights } from '../types/models';
@@ -6,7 +6,7 @@ import { InfoTip } from './ui';
 
 const COLORS: Record<keyof Weights, string> = {
   lease: '#1d7a6b',
-  safety: '#4f6bd8',
+  safety: '#6b7f3a',
   density: '#d98a2b',
   airQuality: '#3aa0c8',
 };

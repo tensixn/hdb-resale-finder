@@ -1,4 +1,4 @@
-import { CheckCircle2, Info, XCircle } from 'lucide-react';
+import { CheckCircle2, Info, XCircle } from './icons';
 import { useToasts } from '../state/toastStore';
 
 export function Toasts() {

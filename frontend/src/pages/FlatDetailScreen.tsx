@@ -1,4 +1,4 @@
-import { ArrowLeft, Calculator, CalendarClock, ChevronDown, GitCompare, GraduationCap, MapPin, Minus, Plus, Scale, Star, TrendingUp } from 'lucide-react';
+import { ArrowLeft, Calculator, CalendarClock, ChevronDown, GitCompare, GraduationCap, MapPin, Minus, Plus, Scale, Star, TrendingUp } from '../components/icons';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { api, ApiError } from '../api/apiClient';
@@ -155,7 +155,7 @@ export default function FlatDetailScreen() {
           <div className="mb-1 flex flex-wrap items-center gap-2 text-sm text-ink-500">
             <MapPin className="h-4 w-4" /> {titleCase(f.town)} · {detail.region}
           </div>
-          <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
+          <h1 className="font-display text-2xl font-semibold tracking-tight md:text-4xl">
             Blk {f.block} {titleCase(f.street)}
           </h1>
           <p className="mt-1 text-ink-600">
@@ -164,7 +164,7 @@ export default function FlatDetailScreen() {
         </div>
         <div className="flex gap-2">
           <Button variant={bookmarked ? 'secondary' : 'primary'} onClick={() => toggleBookmark(flatId)} className="flex-1 md:flex-none">
-            <Star className={`h-4 w-4 ${bookmarked ? 'text-amber-500' : ''}`} fill={bookmarked ? 'currentColor' : 'none'} />
+            <Star className={`h-4 w-4 ${bookmarked ? 'text-amber-500' : ''}`} weight={bookmarked ? 'fill' : 'regular'} />
             {bookmarked ? 'Bookmarked' : 'Bookmark'}
           </Button>
           <Button variant="secondary" onClick={compare} className="flex-1 md:flex-none">
@@ -198,7 +198,7 @@ export default function FlatDetailScreen() {
                 {row.helps && (
                   <li className="flex gap-2.5">
                     <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700" aria-hidden>
-                      <Plus className="h-3.5 w-3.5" strokeWidth={3} />
+                      <Plus className="h-3.5 w-3.5" weight="bold" />
                     </span>
                     <span>
                       <b>Best thing:</b> {row.helps.text}, worth {pts(row.helps.delta)} more points than the typical flat in your results.
@@ -208,7 +208,7 @@ export default function FlatDetailScreen() {
                 {row.hurts && (
                   <li className="flex gap-2.5">
                     <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-rose-100 text-rose-700" aria-hidden>
-                      <Minus className="h-3.5 w-3.5" strokeWidth={3} />
+                      <Minus className="h-3.5 w-3.5" weight="bold" />
                     </span>
                     <span>
                       <b>Trade-off:</b> {row.hurts.text}, costing it {pts(row.hurts.delta)} points.

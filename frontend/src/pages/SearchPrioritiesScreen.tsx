@@ -1,4 +1,4 @@
-import { Bike, Bus, Car, Footprints, Info, Plus, Search, X } from 'lucide-react';
+import { Bike, Bus, Car, Footprints, Info, Plus, Search, X } from '../components/icons';
 import { useEffect, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api/apiClient';
@@ -60,7 +60,7 @@ export default function SearchPrioritiesScreen() {
     <div className="mx-auto max-w-6xl px-4 pb-28 pt-6 md:pb-16 md:pt-10 lg:px-6">
       <div className="mb-6 max-w-3xl md:mb-8">
         <p className="text-sm font-semibold text-brand-700">HDB resale, ranked and explained</p>
-        <h1 className="mt-1 text-[28px] font-bold leading-tight tracking-tight text-ink-950 md:text-4xl">Find a resale flat that works for both of you.</h1>
+        <h1 className="mt-1 font-display text-[30px] font-semibold leading-[1.1] tracking-tight text-ink-950 md:text-[44px]">Find a resale flat that works for both of you.</h1>
         <p className="mt-2 text-[15px] text-ink-600 md:text-base">
           Tell us where you work and what matters. Every flat gets a match score out of 100, and we show exactly where each point came from.
         </p>

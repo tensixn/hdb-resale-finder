@@ -1,4 +1,4 @@
-import { Bookmark, CircleHelp, Moon, Search, Sun, UserRound } from 'lucide-react';
+import { Bookmark, CircleHelp, Moon, Search, Sun, UserRound } from './icons';
 import { useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../state/authStore';
@@ -14,12 +14,18 @@ export function Logo() {
   return (
     <Link to="/" className="flex min-h-[44px] items-center gap-2.5 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600">
       <svg viewBox="0 0 32 32" className="h-8 w-8" aria-hidden>
-        <rect width="32" height="32" rx="9" fill="#1d7a6b" />
-        <path d="M8 15.5 16 9l8 6.5V24a1 1 0 0 1-1 1h-4.5v-5h-5v5H9a1 1 0 0 1-1-1z" fill="#fff" />
-        <circle cx="23.5" cy="9" r="3" fill="#f6c453" />
+        <defs>
+          <mask id="logo-windows">
+            <rect width="32" height="32" fill="#fff" />
+            <path d="M9 9h2.5v2.5H9zM13.5 9H16v2.5h-2.5zM9 14h2.5v2.5H9zM13.5 14H16v2.5h-2.5zM9 19h2.5v2.5H9zM13.5 19H16v2.5h-2.5z" fill="#000" />
+          </mask>
+        </defs>
+        <rect x="6" y="3" width="12" height="26" rx="1.5" fill="#1d7a6b" mask="url(#logo-windows)" />
+        <rect x="20" y="13" width="7" height="16" rx="1.5" fill="#7fcfbd" />
+        <rect x="3" y="28" width="26" height="1.5" rx=".75" fill="#1d7a6b" />
       </svg>
       <div className="leading-tight">
-        <div className="text-[15px] font-bold tracking-tight text-ink-900">HomeMatch SG</div>
+        <div className="font-display text-[17px] font-semibold tracking-tight text-ink-900">HomeMatch SG</div>
         <div className="hidden text-[11px] text-ink-500 sm:block">HDB resale flat search &amp; analysis</div>
       </div>
     </Link>

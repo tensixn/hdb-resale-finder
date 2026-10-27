@@ -1,4 +1,4 @@
-import { Hourglass, Leaf, Scale, ShieldCheck, type LucideIcon } from 'lucide-react';
+import { Hourglass, Leaf, Scale, ShieldCheck, type LucideIcon } from '../components/icons';
 import type { Weights } from '../types/models';
 
 export interface Preset {

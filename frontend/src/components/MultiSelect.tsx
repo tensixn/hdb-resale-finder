@@ -1,4 +1,4 @@
-import { Check, ChevronDown, X } from 'lucide-react';
+import { Check, ChevronDown, X } from './icons';
 import { useEffect, useRef, useState } from 'react';
 
 /** Searchable multi-select used for towns. An empty selection means "any". */

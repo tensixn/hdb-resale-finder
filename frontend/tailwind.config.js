@@ -5,7 +5,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+        sans: ['Geist', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+        display: ['Fraunces', 'Georgia', 'serif'],
       },
       colors: {
         brand: {
@@ -36,8 +37,8 @@ export default {
         },
       },
       boxShadow: {
-        card: '0 1px 2px rgba(23,26,33,0.04), 0 4px 16px rgba(23,26,33,0.06)',
-        pop: '0 8px 30px rgba(23,26,33,0.14)',
+        card: '0 1px 2px rgba(22,50,46,0.05), 0 4px 16px rgba(22,50,46,0.07)',
+        pop: '0 8px 30px rgba(22,50,46,0.16)',
       },
     },
   },

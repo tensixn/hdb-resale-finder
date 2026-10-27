@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowRight, ArrowUp, ChevronDown, Minus, Plus, Star, TriangleAlert } from 'lucide-react';
+import { ArrowDown, ArrowRight, ArrowUp, ChevronDown, Minus, Plus, Star, TriangleAlert } from './icons';
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { pts, type Averages, type Driver, type Part } from '../lib/explain';
@@ -87,7 +87,7 @@ function RankCardImpl({
           onSelect(f.id);
         }
       }}
-      className={`group relative cursor-pointer scroll-mt-3 rounded-2xl bg-white ring-1 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 ${
+      className={`group relative cursor-pointer scroll-mt-3 rounded-2xl bg-white ring-1 transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 ${
         selected ? 'shadow-pop ring-2 ring-brand-600' : hovered ? 'shadow-pop ring-brand-300' : 'shadow-card ring-ink-900/5 hover:ring-ink-900/15'
       }`}
     >
@@ -134,7 +134,7 @@ function RankCardImpl({
                 bookmarked ? 'text-amber-500' : 'text-ink-300 hover:bg-ink-50 hover:text-ink-500'
               }`}
             >
-              <Star className="h-5 w-5" fill={bookmarked ? 'currentColor' : 'none'} />
+              <Star className="h-5 w-5" weight={bookmarked ? 'fill' : 'regular'} />
             </button>
           </div>
 
@@ -161,7 +161,7 @@ function RankCardImpl({
             {row.helps && (
               <li className="flex items-start gap-1.5 text-ink-800">
                 <span className="mt-px flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700" aria-hidden>
-                  <Plus className="h-3 w-3" strokeWidth={3} />
+                  <Plus className="h-3 w-3" weight="bold" />
                 </span>
                 <span className="min-w-0">
                   <span className="sr-only">Helps most: </span>
@@ -172,7 +172,7 @@ function RankCardImpl({
             {row.hurts && (
               <li className="flex items-start gap-1.5 text-ink-800">
                 <span className="mt-px flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-rose-100 text-rose-700" aria-hidden>
-                  <Minus className="h-3 w-3" strokeWidth={3} />
+                  <Minus className="h-3 w-3" weight="bold" />
                 </span>
                 <span className="min-w-0">
                   <span className="sr-only">Costs most: </span>

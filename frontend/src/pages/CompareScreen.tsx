@@ -1,4 +1,4 @@
-import { ArrowLeft, Crown, X } from 'lucide-react';
+import { ArrowLeft, Crown, X } from '../components/icons';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api, ApiError } from '../api/apiClient';
@@ -68,7 +68,7 @@ export default function CompareScreen() {
               const Icon = MODE_ICON[l.mode];
               return (
                 <div key={l.anchorIndex} className="flex items-center gap-1.5 text-sm">
-                  <span className={`flex h-4 w-4 items-center justify-center rounded text-[9px] font-bold text-white ${l.anchorIndex === 0 ? 'bg-ink-900' : 'bg-violet-600'}`}>{l.anchorIndex + 1}</span>
+                  <span className={`flex h-4 w-4 items-center justify-center rounded text-[9px] font-bold text-white ${l.anchorIndex === 0 ? 'bg-ink-900' : 'bg-[#a8472f]'}`}>{l.anchorIndex + 1}</span>
                   <Icon className="h-3.5 w-3.5 text-ink-400" />
                   <b className="tabular-nums">{l.minutes}</b> min
                 </div>
@@ -90,7 +90,7 @@ export default function CompareScreen() {
       <button onClick={() => navigate('/bookmarks')} className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-ink-500 hover:text-ink-800">
         <ArrowLeft className="h-4 w-4" /> Bookmarks
       </button>
-      <h1 className="mb-1 text-2xl font-bold tracking-tight">Compare flats</h1>
+      <h1 className="mb-1 font-display text-3xl font-semibold tracking-tight">Compare flats</h1>
       <p className="mb-5 text-sm text-ink-500">
         <Crown className="mr-1 inline h-3.5 w-3.5 text-emerald-600" /> marks the best flat on each measure.
         {data.anchors.length > 0 && <> Commute is to {data.anchors.map((a) => a.label).join(' and ')}.</>}

@@ -1,4 +1,4 @@
-import { AlertTriangle, X } from 'lucide-react';
+import { AlertTriangle, X } from './icons';
 import { useState } from 'react';
 
 /** Non-blocking notice shown when cached data is in use or a provider reports a problem (NFR-3). */

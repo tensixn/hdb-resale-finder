@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp } from 'lucide-react';
+import { ArrowDown, ArrowUp } from './icons';
 import type { Averages, Part } from '../lib/explain';
 import { Swatch } from './ScoreStack';
 

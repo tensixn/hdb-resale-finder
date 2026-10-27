@@ -1,4 +1,4 @@
-import { Calculator, ShieldCheck } from 'lucide-react';
+import { Calculator, ShieldCheck } from '../components/icons';
 import { useEffect, useRef, useState } from 'react';
 import { api, ApiError } from '../api/apiClient';
 import { Button, Field, InfoTip, inputClass } from '../components/ui';

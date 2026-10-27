@@ -1,4 +1,4 @@
-import { MapPin } from 'lucide-react';
+import { MapPin } from './icons';
 import { useEffect, useRef, useState } from 'react';
 import { api } from '../api/apiClient';
 import { inputClass } from './ui';

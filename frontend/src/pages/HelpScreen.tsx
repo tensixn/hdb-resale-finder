@@ -1,4 +1,4 @@
-import { Database, RefreshCw } from 'lucide-react';
+import { Database, RefreshCw } from '../components/icons';
 import { useEffect, useState } from 'react';
 import { api, ApiError } from '../api/apiClient';
 import { Button, Card, SectionTitle } from '../components/ui';
@@ -61,7 +61,7 @@ export default function HelpScreen() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 pb-28 pt-6 md:pb-16 lg:px-6">
-      <h1 className="mb-1 text-2xl font-bold tracking-tight">Help &amp; FAQ</h1>
+      <h1 className="mb-1 font-display text-3xl font-semibold tracking-tight">Help &amp; FAQ</h1>
       <p className="mb-6 text-sm text-ink-500">How HomeMatch SG works, and where its numbers come from.</p>
 
       {status && (

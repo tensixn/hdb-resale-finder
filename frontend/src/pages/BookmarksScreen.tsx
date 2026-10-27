@@ -1,4 +1,4 @@
-import { GitCompare, Star, Trash2 } from 'lucide-react';
+import { GitCompare, Star, Trash2 } from '../components/icons';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { api, ApiError } from '../api/apiClient';
@@ -49,7 +49,7 @@ export default function BookmarksScreen() {
     <div className="mx-auto max-w-6xl px-4 pb-32 pt-6 md:pb-16 lg:px-6">
       <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Bookmarks</h1>
+          <h1 className="font-display text-3xl font-semibold tracking-tight">Bookmarks</h1>
           <p className="text-sm text-ink-500">Tick two or more flats to compare them side by side.</p>
         </div>
       </div>

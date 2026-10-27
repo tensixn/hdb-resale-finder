@@ -1,4 +1,4 @@
-import { Check } from 'lucide-react';
+import { Check } from './icons';
 import { activePreset, PRESETS } from '../lib/priorities';
 import type { Weights } from '../types/models';
 

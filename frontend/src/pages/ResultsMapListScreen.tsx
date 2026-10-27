@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, ChevronDown, ChevronLeft, ChevronRight, List, Map as MapIcon, RotateCcw, SearchX, SlidersHorizontal, Sparkles, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronDown, ChevronLeft, ChevronRight, List, Map as MapIcon, RotateCcw, SearchX, SlidersHorizontal, Sparkles, X } from '../components/icons';
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api/apiClient';
