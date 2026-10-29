@@ -28,6 +28,16 @@ public class ProfileController {
         return profileService.profile(CurrentUser.require().userId());
     }
 
+    public record NameRequest(@jakarta.validation.constraints.Size(max = 50) String name) {
+    }
+
+    @PutMapping("/name")
+    public ProfileDto rename(@Valid @RequestBody NameRequest request) {
+        Long userId = CurrentUser.require().userId();
+        profileService.rename(userId, request.name());
+        return profileService.profile(userId);
+    }
+
     @PutMapping("/financial")
     public ProfileDto saveFinancial(@Valid @RequestBody FinancialProfileDto request) {
         Long userId = CurrentUser.require().userId();

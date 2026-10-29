@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { setUnauthorizedHandler } from './api/apiClient';
+import { api, setUnauthorizedHandler } from './api/apiClient';
 import { NavBar } from './components/NavBar';
 import { Toasts } from './components/Toasts';
 import BookmarksScreen from './pages/BookmarksScreen';
@@ -27,13 +27,16 @@ function RequireAuth({ children }: { children: JSX.Element }) {
 export default function App() {
   const email = useAuth((s) => s.email);
   const clearLocal = useAuth((s) => s.clearLocal);
+  const setName = useAuth((s) => s.setName);
   const loadBookmarks = useBookmarks((s) => s.load);
   const resetBookmarks = useBookmarks((s) => s.reset);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (email) loadBookmarks().catch(() => undefined);
-  }, [email, loadBookmarks]);
+    if (!email) return;
+    loadBookmarks().catch(() => undefined);
+    api.profile().then((p) => setName(p.displayName)).catch(() => undefined);
+  }, [email, loadBookmarks, setName]);
 
   // UC-15.AC.1: an expired session is treated as signed out.
   useEffect(() => {

@@ -15,6 +15,9 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(name = "display_name")
+    private String displayName;
+
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
@@ -49,6 +52,8 @@ public class User {
 
     public Long getId() { return id; }
     public String getEmail() { return email; }
+    public String getDisplayName() { return displayName; }
+    public void setDisplayName(String displayName) { this.displayName = displayName; }
     public String getPasswordHash() { return passwordHash; }
     public String getRole() { return role; }
     public int getFailedAttempts() { return failedAttempts; }

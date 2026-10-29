@@ -5,7 +5,8 @@ import { useId, useState } from 'react';
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 
 const VARIANTS: Record<Variant, string> = {
-  primary: 'bg-brand-600 text-white hover:bg-brand-700 shadow-sm disabled:bg-brand-600/50',
+  primary:
+    'bg-gradient-to-b from-brand-500 to-brand-700 text-white shadow-[0_1px_2px_rgba(10,38,34,0.25),inset_0_1px_0_rgba(255,255,255,0.18)] hover:from-brand-600 hover:to-brand-800 disabled:opacity-50',
   secondary: 'bg-white text-ink-800 ring-1 ring-inset ring-ink-200 hover:bg-ink-50 disabled:text-ink-400',
   ghost: 'text-ink-700 hover:bg-ink-100 disabled:text-ink-300',
   danger: 'bg-white text-rose-700 ring-1 ring-inset ring-rose-200 hover:bg-rose-50',

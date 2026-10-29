@@ -8,6 +8,8 @@ export type PendingAction = { type: 'bookmark'; flatId: number } | { type: 'comp
 
 interface AuthState {
   email: string | null;
+  name: string | null;
+  setName: (name: string | null) => void;
   pending: PendingAction | null;
   signedIn: () => boolean;
   signIn: (token: string, email: string) => void;
@@ -26,6 +28,8 @@ function readEmail(): string | null {
 
 export const useAuth = create<AuthState>((set, get) => ({
   email: readEmail(),
+  name: null,
+  setName: (name) => set({ name }),
   pending: null,
   signedIn: () => get().email !== null,
   signIn: (token, email) => {
@@ -54,7 +58,7 @@ export const useAuth = create<AuthState>((set, get) => ({
     } catch {
       /* ignore */
     }
-    set({ email: null, pending: null });
+    set({ email: null, name: null, pending: null });
   },
   setPending: (pending) => set({ pending }),
 }));

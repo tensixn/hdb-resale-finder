@@ -182,6 +182,7 @@ export interface CompareResult {
 
 export interface Profile {
   email: string;
+  displayName: string | null;
   memberSince: string;
   weights: Weights;
   financial: FinancialProfile | null;

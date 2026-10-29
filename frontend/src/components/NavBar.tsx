@@ -51,10 +51,11 @@ function ThemeToggle() {
 export function NavBar() {
   const { pathname } = useLocation();
   const email = useAuth((s) => s.email);
+  const label = useAuth((s) => s.name) || email;
   const hasResults = useSearch((s) => s.searchId !== null);
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-ink-900/5 bg-white/90 backdrop-blur dark:bg-ink-100/90">
+      <header className="sticky top-0 z-40 border-b border-ink-900/5 bg-white/75 shadow-[0_1px_0_rgba(255,255,255,0.6)_inset] backdrop-blur-xl backdrop-saturate-150 dark:bg-ink-100/75">
         <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-4 lg:px-6">
           <Logo />
           <nav className="hidden items-center gap-1 md:flex">
@@ -66,7 +67,7 @@ export function NavBar() {
                   key={t.to}
                   to={to}
                   className={`flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-medium transition ${
-                    active ? 'bg-brand-50 text-brand-700' : 'text-ink-600 hover:bg-ink-100 hover:text-ink-900'
+                    active ? 'bg-brand-50 text-brand-700 ring-1 ring-inset ring-brand-200/70' : 'text-ink-600 hover:bg-ink-100 hover:text-ink-900'
                   }`}
                 >
                   <t.icon className="h-4 w-4" />
@@ -88,9 +89,9 @@ export function NavBar() {
             {email ? (
               <Link to="/profile" className="flex items-center gap-2 rounded-full bg-ink-100 py-1 pl-1 pr-3 text-sm text-ink-700 hover:bg-ink-200">
                 <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-600 text-xs font-bold uppercase text-white">
-                  {email[0]}
+                  {label![0]}
                 </span>
-                <span className="hidden max-w-[160px] truncate lg:inline">{email}</span>
+                <span className="hidden max-w-[160px] truncate lg:inline">{label}</span>
               </Link>
             ) : (
               <Link to="/login" className="flex min-h-[44px] items-center rounded-xl px-3.5 text-sm font-semibold text-brand-700 hover:bg-brand-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 md:min-h-[36px]">

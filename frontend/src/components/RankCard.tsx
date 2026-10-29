@@ -87,7 +87,7 @@ function RankCardImpl({
           onSelect(f.id);
         }
       }}
-      className={`group relative cursor-pointer scroll-mt-3 rounded-2xl bg-white ring-1 transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 ${
+      className={`group relative cursor-pointer scroll-mt-3 rounded-2xl bg-white ring-1 transition duration-200 motion-safe:hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 ${
         selected ? 'shadow-pop ring-2 ring-brand-600' : hovered ? 'shadow-pop ring-brand-300' : 'shadow-card ring-ink-900/5 hover:ring-ink-900/15'
       }`}
     >
@@ -120,7 +120,7 @@ function RankCardImpl({
               </p>
             </div>
             <div className="shrink-0 text-right">
-              <div className="text-[22px] font-bold leading-none tabular-nums text-ink-900">{Math.round(item.matchScore)}</div>
+              <div className="font-display text-[26px] font-semibold leading-none tabular-nums text-brand-700">{Math.round(item.matchScore)}</div>
               <div className="text-[10px] font-semibold uppercase tracking-wide text-ink-400">match</div>
             </div>
             <button
@@ -196,7 +196,7 @@ function RankCardImpl({
 
           {/* Price, kept apart from the score on purpose */}
           <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1">
-            <span className="text-base font-bold tracking-tight text-ink-900">{moneyShort(f.price)}</span>
+            <span className="font-display text-lg font-semibold tracking-tight text-ink-900">{moneyShort(f.price)}</span>
             <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset ${VALUATION[item.valuation].tone}`} title={VALUATION[item.valuation].help}>
               <span className={`h-1.5 w-1.5 rounded-full ${VALUATION[item.valuation].dot}`} aria-hidden />
               {VALUATION[item.valuation].label}

@@ -108,6 +108,7 @@ export const api = {
   logout: () => request<void>('POST', '/auth/logout'),
 
   profile: () => request<Profile>('GET', '/profile'),
+  rename: (name: string) => request<Profile>('PUT', '/profile/name', { name }),
   saveFinancial: (p: FinancialProfile) => request<Profile>('PUT', '/profile/financial', p),
   deleteFinancial: () => request<void>('DELETE', '/profile/financial'),
 

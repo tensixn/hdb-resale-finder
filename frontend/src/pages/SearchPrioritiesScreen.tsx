@@ -58,10 +58,12 @@ export default function SearchPrioritiesScreen() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 pb-28 pt-6 md:pb-16 md:pt-10 lg:px-6">
-      <div className="mb-6 max-w-3xl md:mb-8">
-        <p className="text-sm font-semibold text-brand-700">HDB resale, ranked and explained</p>
-        <h1 className="mt-1 font-display text-[30px] font-semibold leading-[1.1] tracking-tight text-ink-950 md:text-[44px]">Find a resale flat that works for both of you.</h1>
-        <p className="mt-2 text-[15px] text-ink-600 md:text-base">
+      <div className="hero-bg mb-6 overflow-hidden rounded-3xl px-6 py-9 text-white shadow-pop md:mb-8 md:px-12 md:py-14">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-200">HDB resale, ranked and explained</p>
+        <h1 className="mt-3 max-w-3xl font-display text-[34px] font-medium leading-[1.05] tracking-tight md:text-[56px]">
+          Find a resale flat that works for <em className="text-amber-200">both of you.</em>
+        </h1>
+        <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-brand-100 md:text-lg">
           Tell us where you work and what matters. Every flat gets a match score out of 100, and we show exactly where each point came from.
         </p>
       </div>

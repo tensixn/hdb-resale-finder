@@ -2,7 +2,6 @@ import { Eye, EyeOff, LogIn } from '../components/icons';
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { api, ApiError } from '../api/apiClient';
-import { Logo } from '../components/NavBar';
 import { Button, Card, Field, inputClass } from '../components/ui';
 import { useAuth } from '../state/authStore';
 import { finishPendingAction } from './authFlow';
@@ -80,15 +79,12 @@ export default function LoginScreen() {
 export function AuthLayout({ title, subtitle, children }: { title: string; subtitle: string; children: React.ReactNode }) {
   return (
     <div className="flex min-h-[calc(100dvh-64px)] items-start justify-center px-4 pb-24 pt-10 md:items-center md:pt-0">
-      <Card className="w-full max-w-md p-7">
-        <div className="mb-6">
-          <div className="mb-6 md:hidden">
-            <Logo />
-          </div>
-          <h1 className="font-display text-3xl font-semibold tracking-tight">{title}</h1>
-          <p className="mt-1 text-sm text-ink-500">{subtitle}</p>
+      <Card className="w-full max-w-md overflow-hidden">
+        <div className="hero-bg px-7 py-8 text-white">
+          <h1 className="font-display text-3xl font-medium tracking-tight">{title}</h1>
+          <p className="mt-1 text-sm text-brand-100">{subtitle}</p>
         </div>
-        {children}
+        <div className="p-7">{children}</div>
       </Card>
     </div>
   );

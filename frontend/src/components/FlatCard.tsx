@@ -35,7 +35,7 @@ export function FlatCard({
       id={`flat-${f.id}`}
       onMouseEnter={() => onHover(true)}
       onMouseLeave={() => onHover(false)}
-      className={`group relative cursor-pointer rounded-2xl bg-white p-4 ring-1 transition ${
+      className={`group relative cursor-pointer rounded-2xl bg-white p-4 ring-1 transition duration-200 motion-safe:hover:-translate-y-0.5 ${
         highlighted ? 'shadow-pop ring-brand-400' : 'shadow-card ring-ink-900/5 hover:ring-ink-900/15'
       }`}
       onClick={onOpen}
@@ -74,7 +74,7 @@ export function FlatCard({
           </div>
 
           <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
-            <span className="text-lg font-bold tracking-tight text-ink-900">{moneyShort(f.price)}</span>
+            <span className="font-display text-xl font-semibold tracking-tight text-ink-900">{moneyShort(f.price)}</span>
             <ValuationBadge label={item.valuation} size="sm" />
             <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-ink-50 px-2 py-0.5 text-xs font-medium text-ink-700" title="Livability Index">
               Livability <b className="tabular-nums text-ink-900">{Math.round(item.livability.index)}</b>

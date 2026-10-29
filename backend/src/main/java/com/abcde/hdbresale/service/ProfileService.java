@@ -26,6 +26,13 @@ public class ProfileService {
         this.criteriaRepository = criteriaRepository;
     }
 
+    /** Sets the display name shown instead of the email; blank clears it. */
+    @Transactional
+    public void rename(Long userId, String name) {
+        User user = userRepository.findById(userId).orElseThrow(ApiException::unauthenticated);
+        user.setDisplayName(name == null || name.isBlank() ? null : name.trim());
+    }
+
     /** The account page (UC-14): email, saved weights, saved financial profile and last search. */
     @Transactional(readOnly = true)
     public ProfileDto profile(Long userId) {
@@ -34,7 +41,7 @@ public class ProfileService {
                 .map(c -> new ProfileDto.LastSearch(c.getWorkplace1(), c.getWorkplace2(), c.getTransportModes(),
                         c.getMinPrice(), c.getMaxPrice(), c.getFlatTypes(), c.getTowns(), c.getCreatedAt()))
                 .orElse(null);
-        return new ProfileDto(user.getEmail(), user.getCreatedAt(), WeightsDto.of(weightService.forUser(userId)),
+        return new ProfileDto(user.getEmail(), user.getDisplayName(), user.getCreatedAt(), WeightsDto.of(weightService.forUser(userId)),
                 cpfGrantService.savedProfile(userId).orElse(null),
                 cpfGrantService.savedProfileUpdatedAt(userId).orElse(null), last);
     }

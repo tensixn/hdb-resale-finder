@@ -16,7 +16,7 @@ const STATUS_LABEL: Record<MaritalStatus, string> = { MARRIED: 'Married', ENGAGE
 /** UC-14 Manage Profile and UC-15 Sign Out. */
 export default function ProfileScreen() {
   const navigate = useNavigate();
-  const { signOut } = useAuth();
+  const { signOut, setName } = useAuth();
   const resetBookmarks = useBookmarks((s) => s.reset);
   const search = useSearch();
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -24,6 +24,7 @@ export default function ProfileScreen() {
   const [draft, setDraft] = useState<FinancialProfile>({ householdIncome: null, maritalStatus: null, parentPostalCode: '', livingWithParents: false });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
+  const [nameDraft, setNameDraft] = useState<string | null>(null);
 
   const load = () => api.profile().then(setProfile).catch((e: ApiError) => toast(e.message, 'error'));
   useEffect(() => {
@@ -61,6 +62,18 @@ export default function ProfileScreen() {
     load();
   };
 
+  const saveName = async () => {
+    try {
+      const p = await api.rename(nameDraft ?? '');
+      setProfile(p);
+      setName(p.displayName);
+      setNameDraft(null);
+      toast('Name updated', 'success');
+    } catch (e) {
+      toast((e as ApiError).message, 'error');
+    }
+  };
+
   const doSignOut = async () => {
     await signOut();
     resetBookmarks();
@@ -72,9 +85,23 @@ export default function ProfileScreen() {
   return (
     <div className="mx-auto max-w-4xl px-4 pb-28 pt-6 md:pb-16 lg:px-6">
       <div className="mb-6 flex items-center gap-4">
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-600 text-xl font-bold uppercase text-white">{profile.email[0]}</div>
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-600 text-xl font-bold uppercase text-white">{(profile.displayName || profile.email)[0]}</div>
         <div className="min-w-0 flex-1">
-          <h1 className="truncate text-xl font-bold tracking-tight">{profile.email}</h1>
+          {nameDraft === null ? (
+            <h1 className="flex items-center gap-2 text-xl font-bold tracking-tight">
+              <span className="truncate">{profile.displayName || profile.email}</span>
+              <button onClick={() => setNameDraft(profile.displayName ?? '')} className="rounded-lg p-1 text-ink-400 hover:bg-ink-100 hover:text-ink-700" aria-label="Edit name">
+                <Pencil className="h-4 w-4" />
+              </button>
+            </h1>
+          ) : (
+            <form onSubmit={(e) => { e.preventDefault(); saveName(); }} className="flex items-center gap-2">
+              <input autoFocus maxLength={50} value={nameDraft} onChange={(e) => setNameDraft(e.target.value)} placeholder="Your name" aria-label="Your name" className={`${inputClass()} max-w-xs`} />
+              <Button type="submit" size="sm">Save</Button>
+              <Button type="button" variant="ghost" size="sm" onClick={() => setNameDraft(null)}>Cancel</Button>
+            </form>
+          )}
+          {profile.displayName && nameDraft === null && <p className="truncate text-sm text-ink-500">{profile.email}</p>}
           <p className="text-sm text-ink-500">Member since {dateLabel(profile.memberSince).split(',')[0]}</p>
         </div>
         <Button variant="secondary" onClick={doSignOut}>
