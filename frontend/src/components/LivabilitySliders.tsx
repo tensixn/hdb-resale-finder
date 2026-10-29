@@ -49,7 +49,7 @@ export function LivabilitySliders({
                 {f.label}
                 <InfoTip text={f.help} />
               </label>
-              <span className="w-12 text-right text-sm font-semibold tabular-nums text-ink-900">{Math.round(draft[f.key])}%</span>
+              <span className="w-14 text-right text-sm font-semibold tabular-nums text-ink-900">{Number(draft[f.key].toFixed(1))}%</span>
             </div>
             <input
               id={`w-${f.key}`}
