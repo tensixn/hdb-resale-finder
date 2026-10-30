@@ -230,3 +230,5 @@ caught, then the code was restored.
   (bank loans go to 30). Down payment starts at 25% because an HDB loan covers at most 75% of the price; the API
   still accepts lower values and raises them to 25% with a notice (BB-08, BB-10). The API's 30-year tenure limit
   is kept; lowering `@Max(30)` to 25 would also require updating BB-09, BB-15 and BB-21.
+  **Limitations:** The calculator does not account for potential reductions in the maximum HDB loan tenure based on the applicant's age or the flat's remaining lease. Additionally, the interest-rate slider (0–10%) is intended for hypothetical financial simulations. The default interest rate remains at 2.6%, reflecting the prevailing HDB concessionary loan rate used by the application.
+  
