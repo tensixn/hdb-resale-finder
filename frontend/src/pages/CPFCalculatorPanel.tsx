@@ -245,8 +245,8 @@ export function CPFCalculatorPanel({ flatId }: { flatId: number }) {
               </div>
               <div className="space-y-3 text-sm">
                 <Slider label="Loan tenure" value={tenure} min={5} max={25} step={1} unit=" yrs" onChange={setTenure} />
-                <Slider label="Down payment" value={down} min={25} max={60} step={1} unit="%" onChange={setDown} />
-                <Slider label="Interest rate" value={rate} min={1} max={5} step={0.1} unit="%" onChange={setRate} />
+                <Slider label="Down payment" value={down} min={25} max={100} step={1} unit="%" onChange={setDown} />
+                <Slider label="Interest rate" value={rate} min={0} max={10} step={0.1} unit="%" onChange={setRate} />
               </div>
             </div>
 

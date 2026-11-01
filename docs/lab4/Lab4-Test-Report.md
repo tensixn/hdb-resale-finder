@@ -225,7 +225,10 @@ caught, then the code was restored.
   government APIs. `ApiFlowTest` covers the full HTTP stack against an embedded H2 database.
 - Grant amounts are tested against `grant-rules.yml`, so the file itself was checked on 27 Oct 2026. The EHG table for
   families, HDB's own EHG table for singles and the PHG amounts all match. The CPF Housing Grant (Family Grant / Singles Grant) for resale flats was missing, so it was added on 27 Oct 2026 (BB-01 to BB-11 and BB-28 cover it). SRS v1.4 (in `docs/requirements/`) is the version these tests trace to; its FR-11 names this grant.
-- **Finding: the screen and the API disagree on loan limits.** The CPF panel's sliders allow tenure 5 to 25 years,
-  down payment 25% to 60% and interest 1% to 5%, but the API accepts tenure up to 30 years, down payment 0% to 100% and
-  interest 0% to 10% (BB-08, BB-09, BB-21 pass at the API). Nothing breaks, but the two should match. If the team decides
-  HDB loans stop at 25 years, change `@Max(30)` in `CpfGrantRequestDto` to 25 and update BB-09, BB-15 and BB-21.
+- **Finding (resolved): loan limits on screen vs API.** The CPF panel's sliders now allow tenure 5 to 25 years,
+  down payment 25% to 100% and interest 0% to 10%. Tenure stops at 25 years because that is the HDB loan maximum
+  (bank loans go to 30). Down payment starts at 25% because an HDB loan covers at most 75% of the price; the API
+  still accepts lower values and raises them to 25% with a notice (BB-08, BB-10). The API's 30-year tenure limit
+  is kept; lowering `@Max(30)` to 25 would also require updating BB-09, BB-15 and BB-21.
+  **Limitations:** The calculator does not account for potential reductions in the maximum HDB loan tenure based on the applicant's age or the flat's remaining lease. Additionally, the interest-rate slider (0–10%) is intended for hypothetical financial simulations. The default interest rate remains at 2.6%, reflecting the prevailing HDB concessionary loan rate used by the application.
+  
