@@ -1,8 +1,9 @@
-"""Generates the sample data the backend loads on first start.
+"""Generates the synthetic fallback seed data (towns, schools, and sample flats/prices).
 
-The real sources (data.gov.sg resale prices, SPF crime figures, URA/SingStat density, MOE schools)
-either need network access or are not available as an API, so the app ships with a deterministic
-sample built from approximate public figures. Re-run with: python3 tools/generate_seed.py
+The shipped flats.csv and transactions.csv are now a real data.gov.sg snapshot (1 Nov 2026) built by
+tools/fetch_real_seed.py; running this script overwrites them with synthetic data again. Commute times
+are still estimated offline, and crime, density and school figures here remain approximate public
+figures (SPF, URA/SingStat and MOE are not available as an API). Re-run with: python3 tools/generate_seed.py
 """
 import csv
 import math

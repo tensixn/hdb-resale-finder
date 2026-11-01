@@ -1,10 +1,8 @@
 package com.abcde.hdbresale.gateway.client;
 
 import com.abcde.hdbresale.config.AppProperties;
-import com.abcde.hdbresale.domain.Flat;
 import com.abcde.hdbresale.gateway.ExternalServiceException;
 import com.abcde.hdbresale.gateway.ResaleRecord;
-import com.abcde.hdbresale.repository.FlatRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
@@ -21,8 +19,9 @@ import org.springframework.web.client.RestClient;
 
 /**
  * Client for data.gov.sg: the HDB "Resale flat prices" datastore and the NEA real-time PSI API
- * (assumption A-3). In offline mode it simulates both: a handful of new transactions per month on known flats
- * (so the 24-hour batch has something to ingest) and plausible regional PSI values that change daily.
+ * (assumption A-3). In offline mode it returns no new resale transactions (the bundled real data.gov.sg snapshot
+ * is all there is, so the 24-hour batch succeeds with 0 records) and simulates plausible regional PSI values
+ * that change daily.
  */
 @Component
 public class DataGovSgClient {
@@ -31,13 +30,11 @@ public class DataGovSgClient {
     private static final String[] REGIONS = {"north", "south", "east", "west", "central"};
 
     private final AppProperties.External config;
-    private final FlatRepository flatRepository;
     private final ObjectMapper objectMapper;
     private final RestClient http;
 
-    public DataGovSgClient(AppProperties properties, FlatRepository flatRepository, ObjectMapper objectMapper) {
+    public DataGovSgClient(AppProperties properties, ObjectMapper objectMapper) {
         this.config = properties.external();
-        this.flatRepository = flatRepository;
         this.objectMapper = objectMapper;
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout((int) config.timeout().toMillis());
@@ -46,11 +43,14 @@ public class DataGovSgClient {
     }
 
     public List<ResaleRecord> resaleTransactionsSince(String month) {
+        if (!config.live()) {
+            return List.of(); // offline: the bundled seed is the only resale data, so a refresh adds nothing
+        }
         YearMonth from = YearMonth.parse(month);
         YearMonth to = YearMonth.now(SGT);
         List<ResaleRecord> out = new ArrayList<>();
         for (YearMonth m = from; !m.isAfter(to); m = m.plusMonths(1)) {
-            out.addAll(config.live() ? fetchMonth(m) : simulateMonth(m));
+            out.addAll(fetchMonth(m));
         }
         return out;
     }
@@ -85,25 +85,6 @@ public class DataGovSgClient {
         } catch (Exception e) {
             throw new ExternalServiceException("data.gov.sg resale query failed", e);
         }
-    }
-
-    /** Deterministic per month: the same month always yields the same simulated transactions. */
-    private List<ResaleRecord> simulateMonth(YearMonth month) {
-        List<Flat> flats = flatRepository.findAll();
-        if (flats.isEmpty()) {
-            return List.of();
-        }
-        Random rng = new Random(month.hashCode() * 31L + LocalDate.now(SGT).getDayOfMonth() / 10);
-        int count = 8 + rng.nextInt(10);
-        List<ResaleRecord> out = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            Flat f = flats.get(rng.nextInt(flats.size()));
-            long base = f.getLatestPrice() == null ? 500_000 : f.getLatestPrice();
-            long price = Math.round(base * (1.0 + 0.004 + rng.nextGaussian() * 0.03) / 1000.0) * 1000;
-            out.add(new ResaleRecord(month.toString(), f.getTown(), f.getFlatType(), f.getBlock(), f.getStreet(),
-                    f.getStoreyRange(), f.getFloorAreaSqm(), f.getLeaseCommenceYear(), price));
-        }
-        return out;
     }
 
     public Map<String, Integer> psiByRegion() {

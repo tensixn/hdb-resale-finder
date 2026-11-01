@@ -19,8 +19,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.Year;
-import java.time.YearMonth;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,9 +35,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * Start-up class: loads the bundled reference data on an empty database (assumption A-5: crime, density and
- * schools come from static CSV files) and a sample of resale transactions. Transaction months are shifted so
- * the newest sample month is the current month, which keeps the rolling 6-month window populated whenever
- * the app is run.
+ * schools come from static CSV files) and a real data.gov.sg snapshot of resale transactions, kept at their
+ * real months. Re-run tools/fetch_real_seed.py to keep the rolling 6-month valuation window current.
  */
 @Component
 @Order(1)
@@ -100,11 +97,9 @@ public class DataSeeder implements ApplicationRunner {
                 });
                 List<Map<String, String>> rows = new ArrayList<>();
                 read("seed/transactions.csv", rows::add);
-                YearMonth newest = rows.stream().map(r -> YearMonth.parse(r.get("month"))).max(YearMonth::compareTo).orElseThrow();
-                long shift = ChronoUnit.MONTHS.between(newest, YearMonth.now(ValuationService.SGT));
                 for (Map<String, String> r : rows) {
                     Flat f = flats.get(r.get("flat_id"));
-                    String month = YearMonth.parse(r.get("month")).plusMonths(shift).toString();
+                    String month = r.get("month");
                     long price = Long.parseLong(r.get("resale_price"));
                     transactionRepository.save(new Transaction(f.getId(), month, price, "SEED"));
                     f.applyTransaction(month, price);

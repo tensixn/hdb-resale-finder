@@ -104,12 +104,12 @@ export default function HelpScreen() {
             </div>
             <div className="flex justify-between">
               <dt className="text-ink-500">Data sources</dt>
-              <dd className="font-medium">{status.dataMode === 'live' ? 'Live APIs' : 'Offline sample data'}</dd>
+              <dd className="font-medium">{status.dataMode === 'live' ? 'Live APIs' : 'Offline snapshot'}</dd>
             </div>
           </dl>
           {status.dataMode === 'offline' && (
             <p className="mt-3 rounded-lg bg-ink-50 px-3 py-2 text-xs text-ink-600">
-              This copy runs on bundled sample data and simulated travel times, so it works without API keys. Prices, crime and density figures are realistic samples, not official records.
+              This copy runs without API keys. Flats and resale prices are a real data.gov.sg snapshot (Dec 2025 to Oct 2026, located with OneMap), so Refresh now adds no new sales. Travel times are estimated, and crime and density figures are approximate.
             </p>
           )}
         </Card>
