@@ -49,14 +49,14 @@ block.
 | 8 | Towns multi-select | `components/MultiSelect.tsx` | No label association, options had no selected state, Escape did nothing, and the filter input relied on its placeholder as a label | `htmlFor`/`id`, a name that includes the selection, `aria-pressed` options, Escape returns focus to the trigger, `aria-label="Filter towns"` |
 | 9 | Workplace suggestions | `components/PlaceInput.tsx` | Arrow-key highlight was invisible to screen readers | `role="combobox"` + `listbox`/`option` + `aria-activedescendant` |
 
-**Warnings / Advisories (not fixed)**
+**Warnings / Advisories**
 
-- Warning: the native checkboxes on signup (13×16) and bookmarks (16×16) are under 24px. They fall under the
-  user-agent exemption and their labels are clickable, so they pass. A larger custom checkbox would still be kinder on touch.
-- Warning: field hints and errors are not linked to their inputs with `aria-describedby`. Errors are still
-  announced through `role="alert"`, so this is not a failure.
-- Advisory: compare selections live only in memory, so a reload of `/compare` shows the empty state.
-- Advisory: map markers are mouse-only. The ranked list offers the same actions by keyboard, so this is not a failure.
+- Warning, fixed in `30d5c9c`: the checkboxes on signup, bookmarks, CPF and profile were under 24px. They are now 24×24.
+- Warning, fixed in `30d5c9c`: field hints and errors were not linked to their inputs. `Field` now sets
+  `aria-describedby` (and `aria-invalid` on error) on its control.
+- Advisory, fixed in a follow-up PR: compare selections lived only in memory, so reloading `/compare` showed the empty
+  state. They are now kept in `sessionStorage` for the tab and cleared on sign-out.
+- Advisory, open: map markers are mouse-only. The ranked list offers the same actions by keyboard, so this is not a failure.
 
 ### 2. Interface (better-interface, Accessibility rows removed)
 
@@ -76,7 +76,8 @@ rings with shadows (the `shadow-card` + `ring-ink-900/5` token is consistent acr
 
 ### 3. Motion (find-animation-opportunities)
 
-Run after the Blockers were fixed. These are suggestions only and are not implemented.
+Run after the Blockers were fixed. Status: all three rows were implemented in `30d5c9c`. The follow-up PR also fades in
+cards that move into view from outside the rendered list (beyond the first 40), because those cards have no old row to slide from.
 
 | # | Location | Today | Purpose | Frequency | Suggested motion |
 |---|---|---|---|---|---|

@@ -55,6 +55,7 @@ export const useAuth = create<AuthState>((set, get) => ({
     try {
       sessionStorage.removeItem(EMAIL_KEY);
       sessionStorage.removeItem('hm.cpf');
+      sessionStorage.removeItem('hm.compare');
     } catch {
       /* ignore */
     }
