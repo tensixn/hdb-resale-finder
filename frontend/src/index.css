@@ -47,6 +47,19 @@
   }
 }
 
+/* Panels and toasts ease in; entry only, since exits would need delayed unmounting. */
+.enter-pop {
+  transition: opacity 180ms cubic-bezier(0.23, 1, 0.32, 1), translate 180ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+@starting-style {
+  .enter-pop { opacity: 0; translate: 0 var(--enter-y, -4px); }
+}
+/* Reduced motion: keep the fade (it carries the state change), drop the movement. */
+@media (prefers-reduced-motion: reduce) {
+  .enter-pop { transition: opacity 150ms linear !important; }
+  @starting-style { .enter-pop { translate: 0 0; } }
+}
+
 .hero-bg {
   position: relative;
   isolation: isolate;

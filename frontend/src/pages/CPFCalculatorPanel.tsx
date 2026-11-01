@@ -153,7 +153,7 @@ export function CPFCalculatorPanel({ flatId }: { flatId: number }) {
           </div>
         </Field>
         <label className="flex items-center gap-2.5 text-sm text-ink-700">
-          <input type="checkbox" className="h-4 w-4 rounded border-ink-300 text-brand-600 focus:ring-brand-500" checked={profile.livingWithParents} onChange={(e) => setProfile({ ...profile, livingWithParents: e.target.checked })} />
+          <input type="checkbox" className="h-6 w-6 shrink-0 rounded border-ink-300 text-brand-600 focus:ring-brand-500" checked={profile.livingWithParents} onChange={(e) => setProfile({ ...profile, livingWithParents: e.target.checked })} />
           I will live with my parents in this flat
         </label>
         {!profile.livingWithParents && (
@@ -172,7 +172,7 @@ export function CPFCalculatorPanel({ flatId }: { flatId: number }) {
         )}
         {email ? (
           <label className="flex items-center gap-2.5 text-sm text-ink-700">
-            <input type="checkbox" className="h-4 w-4 rounded border-ink-300 text-brand-600 focus:ring-brand-500" checked={save} onChange={(e) => setSave(e.target.checked)} />
+            <input type="checkbox" className="h-6 w-6 shrink-0 rounded border-ink-300 text-brand-600 focus:ring-brand-500" checked={save} onChange={(e) => setSave(e.target.checked)} />
             Save for next time <span className="text-xs text-ink-400">(stored encrypted)</span>
           </label>
         ) : (

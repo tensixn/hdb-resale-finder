@@ -450,7 +450,7 @@ export default function FlatDetailScreen() {
             <ChevronDown className={`h-5 w-5 shrink-0 text-ink-400 transition ${cpfOpen ? 'rotate-180' : ''}`} />
           </button>
           {cpfOpen && (
-            <div className="border-t border-ink-100 p-5">
+            <div className="enter-pop border-t border-ink-100 p-5">
               <CPFCalculatorPanel flatId={flatId} />
             </div>
           )}

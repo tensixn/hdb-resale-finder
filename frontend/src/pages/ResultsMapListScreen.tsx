@@ -1,5 +1,5 @@
 import { ArrowLeft, ArrowRight, ChevronDown, ChevronLeft, ChevronRight, List, Map as MapIcon, RotateCcw, SearchX, SlidersHorizontal, Sparkles, X } from '../components/icons';
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api/apiClient';
 import { FilterPanel } from '../components/FilterPanel';
@@ -45,6 +45,7 @@ export default function ResultsMapListScreen() {
   const [limit, setLimit] = useState(PAGE);
   const [towns, setTowns] = useState<string[]>([]);
   const listRef = useRef<HTMLDivElement>(null);
+  const prevTops = useRef(new Map<string, number>());
   const [phone] = useState(() => window.matchMedia('(max-width: 767px)').matches);
 
   useEffect(() => {
@@ -82,6 +83,30 @@ export default function ResultsMapListScreen() {
   }, [s.result, filtersKey]);
 
   const sorted = useMemo(() => [...ranking.rows].sort(SORTS.find((x) => x.key === sort)!.fn), [ranking.rows, sort]);
+
+  // FLIP: slide cards in view from their old row to the new one after a re-rank. Reduced motion gets a short crossfade.
+  const orderKey = sorted.map((x) => x.item.flat.id).join();
+  useLayoutEffect(() => {
+    const root = listRef.current;
+    if (!root) return;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const view = root.getBoundingClientRect();
+    const next = new Map<string, number>();
+    root.querySelectorAll<HTMLElement>('article[id^="flat-"]').forEach((el) => {
+      // Content-relative, so scrolling between renders isn't mistaken for a re-rank.
+      const top = el.getBoundingClientRect().top - view.top + root.scrollTop;
+      next.set(el.id, top);
+      const old = prevTops.current.get(el.id);
+      if (old === undefined || old === top) return;
+      const inView = (y: number) => y + el.offsetHeight > root.scrollTop && y < root.scrollTop + view.height;
+      if (!inView(old) && !inView(top)) return;
+      el.animate(
+        reduce ? [{ opacity: 0.4 }, { opacity: 1 }] : [{ translate: `0 ${old - top}px` }, { translate: '0 0' }],
+        { duration: reduce ? 150 : 260, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' },
+      );
+    });
+    prevTops.current = next;
+  }, [orderKey]);
 
   // Keep the list in step with the map: a flat picked on the map scrolls into view.
   useEffect(() => {
@@ -240,7 +265,7 @@ export default function ResultsMapListScreen() {
           </div>
         )}
         {panel !== 'none' && (
-          <div className="relative max-h-[60dvh] overflow-y-auto border-t border-ink-100 px-4 pb-4 pt-3">
+          <div className="enter-pop relative max-h-[60dvh] overflow-y-auto border-t border-ink-100 px-4 pb-4 pt-3">
             <button
               onClick={() => setPanel('none')}
               className="absolute right-2 top-1 flex h-11 w-11 items-center justify-center rounded-xl text-ink-400 hover:text-ink-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"

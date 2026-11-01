@@ -10,7 +10,7 @@ export function Toasts() {
         <button
           key={t.id}
           onClick={() => dismiss(t.id)}
-          className="pointer-events-auto flex items-center gap-2 rounded-xl bg-ink-900 px-4 py-2.5 text-sm font-medium text-white shadow-pop"
+          className="enter-pop pointer-events-auto flex [--enter-y:8px] items-center gap-2 rounded-xl bg-ink-900 px-4 py-2.5 text-sm font-medium text-white shadow-pop"
         >
           {t.tone === 'success' ? (
             <CheckCircle2 className="h-4 w-4 text-emerald-400" aria-hidden />

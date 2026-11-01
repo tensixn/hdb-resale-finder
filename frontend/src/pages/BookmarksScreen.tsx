@@ -70,7 +70,7 @@ export default function BookmarksScreen() {
             return (
               <Card key={b.flat.id} className={`relative p-4 transition ${selected ? 'ring-2 ring-brand-500' : ''}`}>
                 <label className="absolute left-4 top-4 flex cursor-pointer items-center gap-2 text-xs font-medium text-ink-600">
-                  <input type="checkbox" checked={selected} onChange={() => toggleCompare(b.flat.id)} className="h-4 w-4 rounded border-ink-300 text-brand-600 focus:ring-brand-500" />
+                  <input type="checkbox" checked={selected} onChange={() => toggleCompare(b.flat.id)} className="h-6 w-6 shrink-0 rounded border-ink-300 text-brand-600 focus:ring-brand-500" />
                   Compare
                 </label>
                 <button onClick={() => remove(b.flat.id)} className="absolute right-3 top-3 rounded-lg p-1.5 text-ink-400 hover:bg-rose-50 hover:text-rose-600" aria-label="Remove bookmark">

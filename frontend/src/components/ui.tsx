@@ -85,6 +85,16 @@ export function Field({
   children: ReactNode;
   htmlFor?: string;
 }) {
+  const msgId = htmlFor ? `${htmlFor}-msg` : undefined;
+  // Fields wrap arbitrary inputs, so link the hint/error to the control by id after render.
+  useEffect(() => {
+    const el = htmlFor ? document.getElementById(htmlFor) : null;
+    if (!el || !msgId) return;
+    if (error || hint) el.setAttribute('aria-describedby', msgId);
+    else el.removeAttribute('aria-describedby');
+    if (error) el.setAttribute('aria-invalid', 'true');
+    else el.removeAttribute('aria-invalid');
+  }, [htmlFor, msgId, error, hint]);
   return (
     <div>
       <label htmlFor={htmlFor} className="mb-1.5 block text-sm font-medium text-ink-800">
@@ -92,11 +102,11 @@ export function Field({
       </label>
       {children}
       {error ? (
-        <p className="mt-1.5 text-sm text-rose-600" role="alert">
+        <p id={msgId} className="mt-1.5 text-sm text-rose-600" role="alert">
           {error}
         </p>
       ) : hint ? (
-        <p className="mt-1.5 text-xs text-ink-500">{hint}</p>
+        <p id={msgId} className="mt-1.5 text-xs text-ink-500">{hint}</p>
       ) : null}
     </div>
   );

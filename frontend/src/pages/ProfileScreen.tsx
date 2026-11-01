@@ -133,7 +133,7 @@ export default function ProfileScreen() {
                 <input id="p-ppc" maxLength={6} inputMode="numeric" value={draft.parentPostalCode} onChange={(e) => setDraft({ ...draft, parentPostalCode: e.target.value.replace(/[^\d]/g, '') })} className={inputClass(errors.parentPostalCode)} />
               </Field>
               <label className="flex items-center gap-2 text-sm text-ink-700">
-                <input type="checkbox" checked={draft.livingWithParents} onChange={(e) => setDraft({ ...draft, livingWithParents: e.target.checked })} className="h-4 w-4 rounded border-ink-300 text-brand-600" />
+                <input type="checkbox" checked={draft.livingWithParents} onChange={(e) => setDraft({ ...draft, livingWithParents: e.target.checked })} className="h-6 w-6 shrink-0 rounded border-ink-300 text-brand-600" />
                 Living with parents
               </label>
               <div className="flex justify-end gap-2">

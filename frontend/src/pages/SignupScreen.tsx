@@ -60,7 +60,7 @@ export default function SignupScreen() {
         </Field>
         <div>
           <label className="flex items-start gap-2.5 rounded-xl bg-ink-50 p-3 text-xs leading-relaxed text-ink-600">
-            <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-0.5 h-4 w-4 rounded border-ink-300 text-brand-600 focus:ring-brand-500" />
+            <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="h-6 w-6 shrink-0 rounded border-ink-300 text-brand-600 focus:ring-brand-500" />
             <span>
               I agree that HomeMatch SG may store my email, saved flats and, if I choose to save it, my financial profile, to provide this service. Financial details are encrypted and are never shared with third parties. I can delete my financial profile at any time (PDPA).
             </span>
