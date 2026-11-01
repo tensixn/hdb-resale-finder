@@ -56,7 +56,7 @@ function PointsRow({ part, detail, delta }: { part: Part; detail: string; delta?
         </span>
       </div>
       <div className="mt-1.5 h-2 overflow-hidden rounded-full" style={{ background: `${PART_COLOR[part.key]}22` }}>
-        <div className="h-full rounded-full transition-all duration-500" style={{ width: `${part.score}%`, background: PART_COLOR[part.key] }} />
+        <div className="h-full rounded-full transition-[width] duration-500" style={{ width: `${part.score}%`, background: PART_COLOR[part.key] }} />
       </div>
       <div className="mt-1 flex items-start justify-between gap-3 text-xs text-ink-500">
         <span>
@@ -97,7 +97,7 @@ export default function FlatDetailScreen() {
     window.scrollTo(0, 0);
   }, [flatId, searchId, weights]);
 
-  if (error) return <EmptyState icon={<MapPin className="h-6 w-6" />} title="Flat not found">{error}</EmptyState>;
+  if (error) return <EmptyState as="h1" icon={<MapPin className="h-6 w-6" />} title="Flat not found">{error}</EmptyState>;
   if (!detail) return <Spinner label="Loading flat details" />;
 
   const f = detail.flat;

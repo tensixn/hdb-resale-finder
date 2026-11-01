@@ -69,7 +69,7 @@ export default function SearchPrioritiesScreen() {
       </div>
 
       <form onSubmit={submit} className="grid items-start gap-5 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]" noValidate>
-        <Card className="p-5 md:p-7">
+        <Card className="p-5 md:p-7 lg:col-start-1 lg:row-start-1">
           <div className="space-y-7">
             <Step n={1} title="Where do you work?" sub="Half of every match score is commute. Each workplace counts equally.">
               <div className="grid gap-4 md:grid-cols-2">
@@ -160,46 +160,27 @@ export default function SearchPrioritiesScreen() {
                     ))}
                   </div>
                 </div>
-                <Field label="Towns" hint="Leave empty to search every town. Lease and floor-area filters are on the results.">
-                  <MultiSelect options={options.towns} value={form.towns} onChange={(towns) => setForm({ towns })} placeholder="Any town" format={titleCase} />
+                <Field label="Towns" htmlFor="towns" hint="Leave empty to search every town. Lease and floor-area filters are on the results.">
+                  <MultiSelect id="towns" label="Towns" options={options.towns} value={form.towns} onChange={(towns) => setForm({ towns })} placeholder="Any town" format={titleCase} />
                 </Field>
               </div>
             </Step>
-
-            {error && !Object.keys(fieldErrors).length && (
-              <p className="rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700" role="alert">
-                {error}
-              </p>
-            )}
-
-            <div className="flex flex-col-reverse gap-3 border-t border-ink-100 pt-5 sm:flex-row sm:items-center sm:justify-between">
-              {searchId ? (
-                <button type="button" onClick={() => navigate('/results')} className="min-h-[44px] rounded-lg text-sm font-medium text-brand-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600">
-                  Back to your last results
-                </button>
-              ) : (
-                <span />
-              )}
-              <Button type="submit" size="lg" loading={loading} className="w-full sm:w-auto">
-                <Search className="h-5 w-5" /> Search flats
-              </Button>
-            </div>
           </div>
         </Card>
 
-        <div className="lg:sticky lg:top-20">
+        <div className="lg:sticky lg:top-20 lg:col-start-2 lg:row-span-2 lg:row-start-1">
           <Card className="p-5 md:p-6">
             <h2 className="text-[15px] font-semibold text-ink-900">How each flat will be scored</h2>
             <p className="mb-4 mt-0.5 text-[13px] text-ink-500">100 points in total. This bar updates as you type and drag.</p>
             <RankingFormula weights={weights} workplaces={workplaces} />
 
-            <div className="mt-5 border-t border-ink-100 pt-4">
-              <h3 className="text-sm font-semibold text-ink-900">4. What matters most at home?</h3>
-              <p className="mb-4 mt-0.5 text-[13px] text-ink-500">Pick a starting point, or split the 50 livability points yourself. You can change this later and watch the ranking move.</p>
-              <div className="mb-4">
-                <PriorityPresets weights={weights} onPick={(w) => applyWeights(w)} />
-              </div>
-              <LivabilitySliders weights={weights} onCommit={(f, v) => adjustWeight(f, v)} onReset={resetWeights} />
+            <div className="mt-5 border-t border-ink-100 pt-5">
+              <Step n={4} title="What matters most at home?" sub="Pick a starting point, or split the 50 livability points yourself. You can change this later and watch the ranking move.">
+                <div className="mb-4">
+                  <PriorityPresets weights={weights} onPick={(w) => applyWeights(w)} />
+                </div>
+                <LivabilitySliders weights={weights} onCommit={(f, v) => adjustWeight(f, v)} onReset={resetWeights} />
+              </Step>
             </div>
 
             <div className="mt-5 flex gap-2.5 rounded-xl bg-amber-50 px-3.5 py-3 text-[13px] leading-relaxed text-amber-950 ring-1 ring-inset ring-amber-200">
@@ -209,6 +190,29 @@ export default function SearchPrioritiesScreen() {
               </p>
             </div>
           </Card>
+        </div>
+
+        {/* After step 4 in the DOM, so keyboard and phone users meet every step before the button.
+            On wide screens the grid places it back under the left card. */}
+        <div className="space-y-3 lg:col-start-1 lg:row-start-2">
+          {error && !Object.keys(fieldErrors).length && (
+            <p className="rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700" role="alert">
+              {error}
+            </p>
+          )}
+
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+            {searchId ? (
+              <button type="button" onClick={() => navigate('/results')} className="min-h-[44px] rounded-lg text-sm font-medium text-brand-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600">
+                Back to your last results
+              </button>
+            ) : (
+              <span />
+            )}
+            <Button type="submit" size="lg" loading={loading} className="w-full sm:w-auto">
+              <Search className="h-5 w-5" /> Search flats
+            </Button>
+          </div>
         </div>
       </form>
     </div>

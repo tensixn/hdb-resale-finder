@@ -68,7 +68,7 @@ export default function LoginScreen() {
         </Link>
       </p>
       <p className="mt-2 text-center">
-        <button onClick={() => navigate(-1)} className="text-sm text-ink-500 hover:text-ink-800">
+        <button type="button" onClick={() => navigate(-1)} className="min-h-[44px] rounded-lg px-3 text-sm text-ink-500 hover:text-ink-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600">
           Cancel
         </button>
       </p>

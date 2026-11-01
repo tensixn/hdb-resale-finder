@@ -102,7 +102,7 @@ export default function ResultsMapListScreen() {
 
   if (!s.searchId && !s.result) {
     return (
-      <EmptyState icon={<SearchX className="h-6 w-6" />} title="No search yet">
+      <EmptyState as="h1" icon={<SearchX className="h-6 w-6" />} title="No search yet">
         <p>Start with your workplace and what matters to you.</p>
         <Button className="mt-4" onClick={() => navigate('/')}>
           Start a search

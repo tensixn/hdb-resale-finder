@@ -31,7 +31,7 @@ export const PART_COLOR: Record<PartKey, string> = {
   w0: '#334155',
   w1: '#a8472f',
   lease: '#1d7a6b',
-  safety: '#6b7f3a',
+  safety: '#637634',
   density: '#d98a2b',
   airQuality: '#2b9fc9',
 };

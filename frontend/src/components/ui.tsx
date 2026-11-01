@@ -1,6 +1,6 @@
 import { Info, Loader2 } from './icons';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
-import { useId, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 
@@ -25,7 +25,7 @@ export function Button({
     <button
       {...rest}
       disabled={rest.disabled || loading}
-      className={`inline-flex items-center justify-center rounded-xl font-semibold transition duration-200 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed ${VARIANTS[variant]} ${sizes[size]} ${className}`}
+      className={`inline-flex items-center justify-center rounded-xl font-semibold transition duration-200 active:scale-[0.96] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed ${VARIANTS[variant]} ${sizes[size]} ${className}`}
     >
       {loading && <Loader2 className="h-4 w-4 animate-spin" />}
       {children}
@@ -62,7 +62,7 @@ export function Chip({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`inline-flex h-11 items-center gap-1.5 rounded-full px-3.5 text-sm font-medium transition duration-200 active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 sm:h-9 ${
+      className={`inline-flex h-11 items-center gap-1.5 rounded-full px-3.5 text-sm font-medium transition duration-200 active:scale-[0.96] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 sm:h-9 ${
         active ? 'bg-brand-600 text-white shadow-sm' : 'bg-white text-ink-700 ring-1 ring-inset ring-ink-200 hover:ring-ink-300'
       }`}
     >
@@ -103,7 +103,7 @@ export function Field({
 }
 
 export const inputClass = (error?: string) =>
-  `block w-full rounded-xl border-0 bg-white px-3.5 py-3 sm:py-2.5 text-sm text-ink-900 ring-1 ring-inset placeholder:text-ink-400 focus:ring-2 focus:ring-inset ${
+  `block w-full rounded-xl border-0 bg-white px-3.5 py-3 sm:py-2.5 text-base sm:text-sm text-ink-900 ring-1 ring-inset placeholder:text-ink-400 focus:ring-2 focus:ring-inset ${
     error ? 'ring-rose-300 focus:ring-rose-500' : 'ring-ink-200 focus:ring-brand-500'
   }`;
 
@@ -111,20 +111,27 @@ export const inputClass = (error?: string) =>
 export function InfoTip({ text }: { text: string }) {
   const [open, setOpen] = useState(false);
   const id = useId();
+  // WCAG 1.4.13: the tip can be dismissed with Escape without moving focus or the pointer.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open]);
   return (
-    <span className="relative inline-flex">
+    // Hover handlers sit on the wrapper so the pointer can move onto the tip without it closing.
+    <span className="relative inline-flex" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
       <button
         type="button"
-        aria-describedby={id}
+        aria-describedby={open ? id : undefined}
         aria-label="More information"
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
+        aria-expanded={open}
         onFocus={() => setOpen(true)}
         onBlur={() => setOpen(false)}
         onClick={() => setOpen((o) => !o)}
-        className="-m-[15px] rounded-full p-[15px] text-ink-400 hover:text-ink-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 sm:m-0 sm:p-0"
+        className="-m-[15px] rounded-full p-[15px] text-ink-500 hover:text-ink-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 sm:-m-[5px] sm:p-[5px]"
       >
-        <Info className="h-3.5 w-3.5" />
+        <Info className="h-3.5 w-3.5" aria-hidden />
       </button>
       {open && (
         <span
@@ -147,11 +154,11 @@ export function Spinner({ label }: { label?: string }) {
   );
 }
 
-export function EmptyState({ icon, title, children }: { icon: ReactNode; title: string; children?: ReactNode }) {
+export function EmptyState({ icon, title, children, as: Heading = 'h2' }: { icon: ReactNode; title: string; children?: ReactNode; as?: 'h1' | 'h2' | 'h3' }) {
   return (
     <div className="flex flex-col items-center px-6 py-14 text-center">
       <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-brand-600">{icon}</div>
-      <h3 className="text-base font-semibold text-ink-900">{title}</h3>
+      <Heading className="text-base font-semibold text-ink-900">{title}</Heading>
       {children && <div className="mt-1.5 max-w-sm text-sm text-ink-500">{children}</div>}
     </div>
   );

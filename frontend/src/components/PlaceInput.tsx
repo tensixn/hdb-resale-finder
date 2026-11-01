@@ -42,7 +42,7 @@ export function PlaceInput({
 
   return (
     <div className="relative">
-      <MapPin className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-400" />
+      <MapPin aria-hidden className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-400" />
       <input
         id={id}
         value={value}
@@ -79,19 +79,25 @@ export function PlaceInput({
         }}
         className={`${inputClass(error)} pl-9`}
         aria-invalid={!!error}
+        role="combobox"
+        aria-autocomplete="list"
+        aria-expanded={open && items.length > 0}
+        aria-controls={`${id}-list`}
+        aria-activedescendant={open && active >= 0 ? `${id}-opt-${active}` : undefined}
       />
       {open && items.length > 0 && (
-        <ul className="absolute z-30 mt-1 max-h-64 w-full overflow-auto rounded-xl bg-white py-1 shadow-pop ring-1 ring-ink-900/10">
+        <ul id={`${id}-list`} role="listbox" className="absolute z-30 mt-1 max-h-64 w-full overflow-auto rounded-xl bg-white py-1 shadow-pop ring-1 ring-ink-900/10">
           {items.map((it, i) => (
-            <li key={it}>
-              <button
-                type="button"
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={() => pick(it)}
-                className={`flex min-h-[44px] w-full items-center gap-2 px-3 py-2 text-left text-sm sm:min-h-0 ${i === active ? 'bg-brand-50 text-brand-800' : 'text-ink-700 hover:bg-ink-50'}`}
-              >
-                <MapPin className="h-3.5 w-3.5 text-ink-400" /> {it}
-              </button>
+            <li
+              key={it}
+              id={`${id}-opt-${i}`}
+              role="option"
+              aria-selected={i === active}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => pick(it)}
+              className={`flex min-h-[44px] w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm sm:min-h-0 ${i === active ? 'bg-brand-50 text-brand-800' : 'text-ink-700 hover:bg-ink-50'}`}
+            >
+              <MapPin className="h-3.5 w-3.5 text-ink-400" aria-hidden /> {it}
             </li>
           ))}
         </ul>

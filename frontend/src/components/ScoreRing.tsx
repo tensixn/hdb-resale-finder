@@ -36,7 +36,7 @@ export function ScoreBar({ value, label, detail }: { value: number; label: strin
         <span className="tabular-nums font-semibold text-ink-900">{Math.round(value)}</span>
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-ink-100">
-        <div className="h-full rounded-full transition-all duration-500" style={{ width: `${value}%`, background: scoreColor(value) }} />
+        <div className="h-full rounded-full transition-[width] duration-500" style={{ width: `${value}%`, background: scoreColor(value) }} />
       </div>
       {detail && <p className="mt-1 text-xs text-ink-500">{detail}</p>}
     </div>

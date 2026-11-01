@@ -5,6 +5,13 @@ import type { Weights } from '../types/models';
  * The ranking formula drawn as a 100-point budget: commute on the left half (split between workplaces),
  * livability on the right half (split by the user's weights). The same colours appear on every card.
  */
+/** White or near-black label, whichever clears 4.5:1 on the segment colour. */
+function labelOn(hex: string) {
+  const lin = (c: number) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+  const [r, g, b] = [1, 3, 5].map((i) => lin(parseInt(hex.slice(i, i + 2), 16) / 255));
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.18 ? '#171a21' : '#ffffff';
+}
+
 export function RankingFormula({ weights, workplaces, dense }: { weights: Weights; workplaces: string[]; dense?: boolean }) {
   const parts = budgetOf(weights, workplaces).filter((p) => p.share > 0);
   const fmt = (n: number) => (Number.isInteger(n) ? String(n) : n.toFixed(1));
@@ -18,8 +25,8 @@ export function RankingFormula({ weights, workplaces, dense }: { weights: Weight
         {parts.map((p) => (
           <div
             key={p.key}
-            className="flex h-6 min-w-0 items-center justify-center overflow-hidden rounded-[4px] text-[10px] font-bold text-white transition-[flex-grow] duration-500"
-            style={{ flexGrow: p.share, flexBasis: 0, background: PART_COLOR[p.key] }}
+            className="flex h-6 min-w-0 items-center justify-center overflow-hidden rounded-[4px] text-[10px] font-bold transition-[flex-grow] duration-500"
+            style={{ flexGrow: p.share, flexBasis: 0, background: PART_COLOR[p.key], color: labelOn(PART_COLOR[p.key]) }}
             title={`${p.label}: up to ${fmt(p.share)} points`}
           >
             {p.share >= 7 ? fmt(p.share) : ''}

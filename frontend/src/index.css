@@ -8,8 +8,8 @@
     --ink-100: 236 238 242;
     --ink-200: 213 217 226;
     --ink-300: 177 184 199;
-    --ink-400: 135 145 167;
-    --ink-500: 104 115 140;
+    --ink-400: 103 113 137; /* #677189: 4.5:1 on ink-50 */
+    --ink-500: 91 102 128; /* #5b6680: 4.9:1 on ink-100 */
     --ink-600: 83 92 115;
     --ink-700: 68 75 94;
     --ink-800: 59 65 80;
@@ -22,10 +22,10 @@
     --ink-100: 42 46 56;
     --ink-200: 59 65 80;
     --ink-300: 68 75 94;
-    --ink-400: 83 92 115;
-    --ink-500: 104 115 140;
-    --ink-600: 135 145 167;
-    --ink-700: 177 184 199;
+    --ink-400: 143 152 173; /* #8f98ad: 4.7:1 on ink-100 */
+    --ink-500: 163 171 191; /* #a3abbf */
+    --ink-600: 177 184 199;
+    --ink-700: 196 202 213;
     --ink-800: 213 217 226;
     --ink-900: 236 238 242;
     --ink-950: 246 247 249;
@@ -42,6 +42,8 @@
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
+    /* Score bars, rings and press scales jump straight to their end state. Spinners keep turning. */
+    *, *::before, *::after { transition-duration: 0.01ms !important; }
   }
 }
 
@@ -78,12 +80,12 @@ input[type='range'].range {
 input[type='range'].range::-webkit-slider-runnable-track {
   height: 6px;
   border-radius: 999px;
-  background: linear-gradient(to right, var(--fill) 0 var(--pct), #e3e6ec var(--pct) 100%);
+  background: linear-gradient(to right, var(--fill) 0 var(--pct), var(--track, #e3e6ec) var(--pct) 100%);
 }
 input[type='range'].range::-moz-range-track {
   height: 6px;
   border-radius: 999px;
-  background: linear-gradient(to right, var(--fill) 0 var(--pct), #e3e6ec var(--pct) 100%);
+  background: linear-gradient(to right, var(--fill) 0 var(--pct), var(--track, #e3e6ec) var(--pct) 100%);
 }
 input[type='range'].range::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -102,12 +104,14 @@ input[type='range'].range::-moz-range-thumb {
   background: #fff;
   border: 2px solid var(--fill);
 }
+/* A solid ring around the whole control: the old 25% tint on the thumb measured under 3:1. */
 input[type='range'].range:focus-visible {
-  outline: none;
+  outline: 2px solid #1d7a6b;
+  outline-offset: 2px;
+  border-radius: 6px;
 }
-input[type='range'].range:focus-visible::-webkit-slider-thumb {
-  box-shadow: 0 0 0 4px rgba(29, 122, 107, 0.25);
-}
+.dark input[type='range'].range { --track: rgb(var(--ink-200)); }
+.dark input[type='range'].range:focus-visible { outline-color: #4bb39f; }
 
 .anchor-marker {
   display: flex;
@@ -225,3 +229,25 @@ input[type='range'].range:focus-visible::-webkit-slider-thumb {
 .dark .text-rose-700, .dark .text-rose-600 { color: #fda4af; }
 /* bg-ink-900 turns near-white in dark mode, so white text on it would vanish (selected preset, step numbers, tooltips, toasts). */
 .dark .bg-ink-900.text-white { color: rgb(var(--ink-50)); }
+
+/* Status colours that had no dark-mode patch (callouts, valuation badges, score deltas, best-value cells). */
+.dark .bg-amber-50 { background-color: #2b2414; }
+.dark .ring-amber-200 { --tw-ring-color: rgb(146 64 14 / 0.6); }
+.dark .text-amber-950, .dark .text-amber-900, .dark .text-amber-800 { color: #fde68a; }
+.dark .text-amber-700 { color: #fcd34d; }
+.dark .bg-emerald-50, .dark .bg-emerald-50\/70 { background-color: #0f2a22; }
+.dark .text-emerald-900, .dark .text-emerald-800, .dark .text-emerald-700, .dark .text-emerald-600 { color: #6ee7b7; }
+.dark .bg-sky-50 { background-color: #0c2533; }
+.dark .text-sky-800 { color: #7dd3fc; }
+.dark .text-rose-900, .dark .text-rose-800 { color: #fda4af; }
+.dark .bg-rose-100 { background-color: #4c1520; }
+.dark .bg-emerald-100 { background-color: #133a2e; }
+/* brand-600 focus rings measure 2.96:1 on dark cards; brand-400 measures 6:1. */
+.dark .focus-visible\:ring-brand-600:focus-visible,
+.dark .focus-visible\:ring-brand-500:focus-visible,
+.dark .focus\:ring-brand-500:focus { --tw-ring-color: #4bb39f; }
+/* Translucent white bars (sticky toolbars, compare tray) and the darkest brand text had no dark patch. */
+.dark .bg-white\/95 { background-color: rgb(33 37 46 / 0.95); }
+.dark .text-brand-800, .dark .text-brand-900, .dark .text-brand-950 { color: #b0e4d6; }
+.dark .text-brand-900\/80 { color: rgb(176 228 214 / 0.85); }
+.dark .ring-brand-200 { --tw-ring-color: #184f48; }

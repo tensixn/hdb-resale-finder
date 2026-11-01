@@ -75,7 +75,7 @@ function RankCardImpl({
       id={`flat-${f.id}`}
       tabIndex={0}
       aria-label={`Rank ${rank}: ${f.block} ${titleCase(f.street)}, match ${Math.round(item.matchScore)}`}
-      aria-expanded={selected}
+      data-selected={selected}
       onMouseEnter={() => onHover(f.id)}
       onMouseLeave={() => onHover(null)}
       onFocus={(e) => e.target === e.currentTarget && onHover(f.id)}
