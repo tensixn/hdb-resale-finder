@@ -16,9 +16,28 @@ interface BookmarkState {
 // (e.g. the load on sign-in racing the pending bookmark completed after sign-up).
 let changes = 0;
 
+// The flats ticked for Compare survive a reload of /compare or /bookmarks (same tab only, like the search form).
+const COMPARE_KEY = 'hm.compare';
+function readCompare(): number[] {
+  try {
+    const v = JSON.parse(sessionStorage.getItem(COMPARE_KEY) ?? '[]');
+    return Array.isArray(v) ? v.filter((x): x is number => typeof x === 'number') : [];
+  } catch {
+    return [];
+  }
+}
+function saveCompare(ids: number[]) {
+  try {
+    if (ids.length) sessionStorage.setItem(COMPARE_KEY, JSON.stringify(ids));
+    else sessionStorage.removeItem(COMPARE_KEY);
+  } catch {
+    /* private mode */
+  }
+}
+
 export const useBookmarks = create<BookmarkState>((set, get) => ({
   ids: new Set(),
-  compare: [],
+  compare: readCompare(),
   load: async () => {
     const at = changes;
     const ids = await api.bookmarkIds();
@@ -51,3 +70,7 @@ export const useBookmarks = create<BookmarkState>((set, get) => ({
   },
   reset: () => set({ ids: new Set(), compare: [] }),
 }));
+
+useBookmarks.subscribe((s, prev) => {
+  if (s.compare !== prev.compare) saveCompare(s.compare);
+});

@@ -92,13 +92,25 @@ export default function ResultsMapListScreen() {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const view = root.getBoundingClientRect();
     const next = new Map<string, number>();
+    const firstRender = prevTops.current.size === 0;
     root.querySelectorAll<HTMLElement>('article[id^="flat-"]').forEach((el) => {
       // Content-relative, so scrolling between renders isn't mistaken for a re-rank.
       const top = el.getBoundingClientRect().top - view.top + root.scrollTop;
       next.set(el.id, top);
       const old = prevTops.current.get(el.id);
-      if (old === undefined || old === top) return;
       const inView = (y: number) => y + el.offsetHeight > root.scrollTop && y < root.scrollTop + view.height;
+      if (old === undefined) {
+        // Only the first PAGE cards are rendered, so a flat that jumps up from further down has no old row
+        // to slide from. Fade it in instead of letting it pop into place.
+        if (!firstRender && inView(top)) {
+          el.animate(reduce ? [{ opacity: 0.4 }, { opacity: 1 }] : [{ opacity: 0, translate: '0 8px' }, { opacity: 1, translate: '0 0' }], {
+            duration: reduce ? 150 : 220,
+            easing: 'cubic-bezier(0.23, 1, 0.32, 1)',
+          });
+        }
+        return;
+      }
+      if (old === top) return;
       if (!inView(old) && !inView(top)) return;
       el.animate(
         reduce ? [{ opacity: 0.4 }, { opacity: 1 }] : [{ translate: `0 ${old - top}px` }, { translate: '0 0' }],
@@ -304,7 +316,8 @@ export default function ResultsMapListScreen() {
         {!phone && shortVersion}
 
         {baseline && priorityChanges.length > 0 && (
-          <div className="rounded-xl bg-brand-50 px-3.5 py-3 text-[13px] text-brand-950 ring-1 ring-inset ring-brand-200" role="status">
+          // This summary is what's in view right after a re-rank (the cards sit below it), so it eases in like the panels.
+          <div className="enter-pop rounded-xl bg-brand-50 px-3.5 py-3 text-[13px] text-brand-950 ring-1 ring-inset ring-brand-200" role="status">
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
                 <div className="font-semibold">Re-ranked for your new priorities</div>
