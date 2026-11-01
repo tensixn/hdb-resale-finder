@@ -8,7 +8,12 @@ export function MultiSelect({
   onChange,
   placeholder,
   format = (s) => s,
+  id,
+  label,
 }: {
+  id?: string;
+  /** Visible field label, repeated in the trigger's name so the current selection is read with it. */
+  label?: string;
   options: string[];
   value: string[];
   onChange: (v: string[]) => void;
@@ -18,6 +23,7 @@ export function MultiSelect({
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState('');
   const ref = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const close = (e: MouseEvent) => {
@@ -31,9 +37,23 @@ export function MultiSelect({
   const toggle = (o: string) => onChange(value.includes(o) ? value.filter((v) => v !== o) : [...value, o]);
 
   return (
-    <div className="relative" ref={ref}>
+    <div
+      className="relative"
+      ref={ref}
+      onKeyDown={(e) => {
+        // Escape closes the list and hands focus back to the trigger.
+        if (e.key === 'Escape' && open) {
+          e.stopPropagation();
+          setOpen(false);
+          trigger.current?.focus();
+        }
+      }}
+    >
       <button
+        ref={trigger}
+        id={id}
         type="button"
+        aria-label={label ? `${label}: ${value.length ? value.map(format).join(', ') : placeholder}` : undefined}
         onClick={() => setOpen((o) => !o)}
         className="flex min-h-[44px] w-full items-center gap-1.5 rounded-xl bg-white px-3 py-1.5 text-left text-sm ring-1 ring-inset ring-ink-200 hover:ring-ink-300 focus:outline-none focus:ring-2 focus:ring-brand-500"
         aria-expanded={open}
@@ -44,6 +64,7 @@ export function MultiSelect({
             <span key={v} className="inline-flex items-center gap-1 rounded-lg bg-brand-50 px-2 py-1 text-xs font-medium text-brand-800">
               {format(v)}
               <X
+                aria-hidden
                 className="h-3 w-3 cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -54,7 +75,7 @@ export function MultiSelect({
           ))}
           {value.length > 4 && <span className="py-1 text-xs text-ink-500">+{value.length - 4} more</span>}
         </div>
-        <ChevronDown className="h-4 w-4 text-ink-400" />
+        <ChevronDown className="h-4 w-4 text-ink-400" aria-hidden />
       </button>
       {open && (
         <div className="absolute z-30 mt-1 w-full rounded-xl bg-white shadow-pop ring-1 ring-ink-900/10">
@@ -64,15 +85,16 @@ export function MultiSelect({
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Type to filter"
-              className="w-full rounded-lg bg-ink-50 px-3 py-2 text-sm outline-none placeholder:text-ink-400"
+              aria-label="Filter towns"
+              className="w-full rounded-lg bg-ink-50 px-3 py-2 text-base outline-none focus-visible:ring-2 focus-visible:ring-brand-600 sm:text-sm placeholder:text-ink-400"
             />
           </div>
           <ul className="max-h-60 overflow-auto py-1">
             {filtered.map((o) => (
               <li key={o}>
-                <button type="button" onClick={() => toggle(o)} className="flex w-full items-center justify-between px-3 py-2 text-left text-sm text-ink-700 hover:bg-ink-50">
+                <button type="button" onClick={() => toggle(o)} aria-pressed={value.includes(o)} className="flex w-full items-center justify-between px-3 py-2 text-left text-sm text-ink-700 hover:bg-ink-50">
                   {format(o)}
-                  {value.includes(o) && <Check className="h-4 w-4 text-brand-600" />}
+                  {value.includes(o) && <Check className="h-4 w-4 text-brand-600" aria-hidden />}
                 </button>
               </li>
             ))}

@@ -42,7 +42,7 @@ export default function BookmarksScreen() {
     }
   };
 
-  if (error) return <EmptyState icon={<Star className="h-6 w-6" />} title="Could not load bookmarks">{error}</EmptyState>;
+  if (error) return <EmptyState as="h1" icon={<Star className="h-6 w-6" />} title="Could not load bookmarks">{error}</EmptyState>;
   if (!items) return <Spinner label="Loading bookmarks" />;
 
   return (

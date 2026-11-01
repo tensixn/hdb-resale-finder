@@ -29,7 +29,7 @@ export default function CompareScreen() {
 
   if (compare.length < 2) {
     return (
-      <EmptyState icon={<Crown className="h-6 w-6" />} title="Pick at least two flats">
+      <EmptyState as="h1" icon={<Crown className="h-6 w-6" />} title="Pick at least two flats">
         Select two or more bookmarks to compare.
         <div className="mt-4">
           <Button onClick={() => navigate('/bookmarks')}>Go to bookmarks</Button>
@@ -37,7 +37,7 @@ export default function CompareScreen() {
       </EmptyState>
     );
   }
-  if (error) return <EmptyState icon={<Crown className="h-6 w-6" />} title="Could not compare">{error}</EmptyState>;
+  if (error) return <EmptyState as="h1" icon={<Crown className="h-6 w-6" />} title="Could not compare">{error}</EmptyState>;
   if (!data) return <Spinner label="Comparing" />;
 
   const best = (metric: string, row: CompareRow) => data.best[metric] === row.flat.id;

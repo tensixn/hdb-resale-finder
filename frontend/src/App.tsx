@@ -16,6 +16,27 @@ import { useAuth } from './state/authStore';
 import { useBookmarks } from './state/bookmarkStore';
 import { toast } from './state/toastStore';
 
+const TITLES: [RegExp, string][] = [
+  [/^\/$/, 'Find a flat'],
+  [/^\/results/, 'Ranked results'],
+  [/^\/flats\//, 'Flat details'],
+  [/^\/bookmarks/, 'Bookmarks'],
+  [/^\/compare/, 'Compare flats'],
+  [/^\/profile/, 'Profile'],
+  [/^\/login/, 'Sign in'],
+  [/^\/signup/, 'Create account'],
+  [/^\/help/, 'Help'],
+];
+
+/** WCAG 2.4.2: each screen gets its own tab title, not one shared title for the whole app. */
+function usePageTitle() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    const name = TITLES.find(([re]) => re.test(pathname))?.[1];
+    document.title = name ? `${name} · HomeMatch SG` : 'HomeMatch SG · HDB resale flat finder';
+  }, [pathname]);
+}
+
 /** Screens that need a signed-in session (FR-24): guests are sent to Login and brought back afterwards. */
 function RequireAuth({ children }: { children: JSX.Element }) {
   const email = useAuth((s) => s.email);
@@ -31,6 +52,7 @@ export default function App() {
   const loadBookmarks = useBookmarks((s) => s.load);
   const resetBookmarks = useBookmarks((s) => s.reset);
   const navigate = useNavigate();
+  usePageTitle();
 
   useEffect(() => {
     if (!email) return;

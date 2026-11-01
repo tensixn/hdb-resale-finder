@@ -6,7 +6,7 @@ import { InfoTip } from './ui';
 
 const COLORS: Record<keyof Weights, string> = {
   lease: '#1d7a6b',
-  safety: '#6b7f3a',
+  safety: '#637634',
   density: '#d98a2b',
   airQuality: '#3aa0c8',
 };
@@ -37,7 +37,7 @@ export function LivabilitySliders({
     <div className={busy ? 'opacity-80' : ''}>
       <div className="mb-4 flex h-2.5 overflow-hidden rounded-full bg-ink-100" aria-hidden>
         {FACTORS.map((f) => (
-          <div key={f.key} className="h-full transition-all duration-300" style={{ width: `${draft[f.key]}%`, background: COLORS[f.key] }} />
+          <div key={f.key} className="h-full transition-[width] duration-300" style={{ width: `${draft[f.key]}%`, background: COLORS[f.key] }} />
         ))}
       </div>
       <div className={compact ? 'space-y-3' : 'space-y-4'}>

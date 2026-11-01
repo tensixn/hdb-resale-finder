@@ -60,7 +60,7 @@ await step(page, 'list<->map sync', async () => {
   const m3 = page.locator('.rank-marker', { hasText: /^3$/ });
   await m3.click({ force: true });
   await page.waitForTimeout(500);
-  const expanded = page.locator('article[aria-expanded=true]');
+  const expanded = page.locator('article[data-selected=true]');
   await expanded.waitFor();
   const lbl = await expanded.getAttribute('aria-label');
   if (!/^Rank 3:/.test(lbl)) throw new Error('map click selected wrong card: ' + lbl);
