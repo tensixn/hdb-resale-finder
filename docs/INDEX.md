@@ -15,7 +15,7 @@ HDB Resale Flat Search and Analysis System (HomeMatch SG). Start here.
 | UI dialog map | [design/dialog-map/](design/dialog-map/) | 3, 5 |
 | Presentation script (15 minutes + 5 minutes Q&A) | [lab5/Presentation-Script.md](lab5/Presentation-Script.md) ([PDF](lab5/Presentation-Script.pdf)) | 5 |
 | Demo video shot list (under 7 minutes, captions) | [lab5/Video-Shot-List.md](lab5/Video-Shot-List.md) ([PDF](lab5/Video-Shot-List.pdf)) | 5 |
-| Demo video (5 to 7 minutes) | _add YouTube link here_ | 5 |
+| Demo video (6:58, captions, no voice-over) | [Google Drive](https://drive.google.com/file/d/1JVu4N5hpKK8hACpdvfAoZ6DmXKBWMnUI/view?usp=sharing) | 5 |
 | Coding-agent exercises and reflections | [lab4/ai-exercise/](lab4/ai-exercise/) | 4 |
 | Meeting minutes | [minutes/](minutes/) | all |
 | How the UI design was chosen | [design-arena.md](design-arena.md) | 4 |
