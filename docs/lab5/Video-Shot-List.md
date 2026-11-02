@@ -1,11 +1,11 @@
 ---
 title: "Lab 5 demo video: shot list and captions"
-subtitle: "HomeMatch SG, Team ABCDE. Target length 6:30 (limit: under 7:00). No voice-over; on-screen captions."
+subtitle: "HomeMatch SG, Team ABCDE. Target length 6:30 (limit: under 7:00). No voice-over, just on-screen captions."
 ---
 
 **Rules from the team notes:** start at the authentication page, cover every feature we have (as listed in the SRS),
 stay under 7 minutes, and use no voice-over. Captions tell the viewer what is happening. Show only what the app
-actually does; section 3 lists the SRS features that are built only partly.
+actually does. Section 3 lists the SRS features that are built only partly.
 
 ## 1. Recording setup
 

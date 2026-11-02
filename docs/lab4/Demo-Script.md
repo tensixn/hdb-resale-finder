@@ -24,7 +24,7 @@ Three things the client should remember, in this order:
 | Role | Who | Does |
 |---|---|---|
 | Presenter | _name_ | Talks to the client, tells the story, keeps time |
-| Driver | _name_ | Only person touching the laptop; follows the click script below |
+| Driver | _name_ | The only person touching the laptop. Follows the click script below |
 | Engineer | _name_ | Presents section 5 (architecture, patterns, testing) and takes technical questions |
 | Backup | _name_ | Second laptop running the same build, video cued up, watches the clock (cards at 5, 10, 13 min) |
 
@@ -38,7 +38,7 @@ Three things the client should remember, in this order:
       Update the "say" lines if they do.
 - [ ] Browser at 125% zoom, bookmarks bar hidden, notifications off, one tab only. Phone view ready in DevTools
       (iPhone 14 Pro preset).
-- [ ] Backup laptop running the same jar; 5-minute video downloaded locally (not streamed).
+- [ ] Backup laptop running the same jar, and the 5-minute video downloaded locally (not streamed).
 - [ ] Check grant amounts in `grant-rules.yml` against hdb.gov.sg. If the team has not verified them, say so when
       showing the CPF panel (see 4.4). Do not present unverified figures as official.
 
@@ -51,7 +51,7 @@ Personas, so the client sees different end-users:
   (postal code **570123**). They start as **guests**, then sign up.
 - **The system itself** (scheduler / administrator view): the nightly valuation refresh and failure handling.
 
-### 4.1 Problem and search (0:00 to 2:30) — UC-01, UC-02
+### 4.1 Problem and search (0:00 to 2:30): UC-01, UC-02
 
 | Driver does | Presenter says |
 |---|---|
@@ -59,18 +59,18 @@ Personas, so the client sees different end-users:
 | Type `Raffles Place` and `one-north`, tick Public transport, max price 650,000, flat type 4 ROOM | "Wei Ling and Arjun just type where they work. Postal codes work too." |
 | Click Search | "We pull every matching flat, compute door-to-door travel time to both offices, and rank them in well under 3 seconds." (27 Oct: 189 flats) |
 
-### 4.2 Results, map and re-weighting (2:30 to 4:30) — UC-03, UC-10
+### 4.2 Results, map and re-weighting (2:30 to 4:30): UC-03, UC-10
 
 | Driver does | Presenter says |
 |---|---|
 | Point at the map pins | "Pins are numbered by rank, and hovering a card highlights its pin, so you can see where the good options cluster." |
 | Point at the grey line under the #1 card | "Every rank explains itself. Number 1 leads number 2 by 1.6 points mainly because of a quicker trip to one-north, and it tells you what it gives up: it is more crowded." (27 Oct: #1 was 688B Henderson Rd, Bukit Merah, 23 minutes to each office) |
 | Point at **The short version** box | "If you only read one thing: best overall, shortest commute, lowest price and most livable, one tap each." |
-| Open Priorities and click the **Safe & sound** preset | "Safety matters most to them. One tap sets safety to 55% and the other three share the rest; you can still fine-tune each slider, and the weights always add up to 100%." |
+| Open Priorities and click the **Safe & sound** preset | "Safety matters most to them. One tap sets safety to 55% and the other three share the rest. You can still fine-tune each slider, and the weights always add up to 100%." |
 | Results re-rank | "Bishan jumps to the top, and each card that moved says why: *Up 1* because safety now counts for more." (27 Oct: 340 Bishan St 12 to #1) |
 | Apply a town filter, then clear it | "Filters narrow the list without running the search again." |
 
-### 4.3 Flat detail and fair value (4:30 to 6:30) — UC-04, UC-05
+### 4.3 Flat detail and fair value (4:30 to 6:30): UC-04, UC-05
 
 | Driver does | Presenter says |
 |---|---|
@@ -78,7 +78,7 @@ Personas, so the client sees different end-users:
 | Scroll to Fair-value pricing | "This is the part buyers ask about most. The last sale was $603,000. Similar 4-room flats in Bishan sold for about $6,768 per square metre over the last 6 months, so a unit this size should be about $663,000. That is more than 5% below, so it is **Under-Valued**." |
 | Point at the sample size and baseline date | "We show how many sales the estimate uses (7 here) and when it was computed. With fewer than 3 sales we say *No estimate* rather than guess." |
 
-### 4.4 CPF grants and affordability (6:30 to 8:00) — UC-06, UC-07
+### 4.4 CPF grants and affordability (6:30 to 8:00): UC-06, UC-07
 
 | Driver does | Presenter says |
 |---|---|
@@ -87,7 +87,7 @@ Personas, so the client sees different end-users:
 | Open the loan assumptions and drag tenure to 20 years | "Every loan assumption is visible and adjustable, and the instalment updates as you drag." |
 | (Say, do not click) | "Income and the parents' postal code are encrypted in our database, and the postal code is never sent to an outside map service. Grant rules sit in one config file so they can be updated when HDB changes them." **If the amounts are not yet verified, add:** "These grant figures are from our reading of HDB's 2024 tables and would be verified before launch." |
 
-### 4.5 Registered buyer: sign up, bookmark, compare (8:00 to 10:00) — UC-13, UC-08, UC-09, UC-11
+### 4.5 Registered buyer: sign up, bookmark, compare (8:00 to 10:00): UC-13, UC-08, UC-09, UC-11
 
 | Driver does | Presenter says |
 |---|---|
@@ -96,7 +96,7 @@ Personas, so the client sees different end-users:
 | Bookmark two more flats (one Bishan, one Queenstown) | |
 | Open Compare | "Side by side: price, price per square metre, fair value, commutes and livability factors. The best flat on each measure is marked with a crown." |
 
-### 4.6 Profile, sign out, lockout (10:00 to 11:00) — UC-14, UC-15, UC-11
+### 4.6 Profile, sign out, lockout (10:00 to 11:00): UC-14, UC-15, UC-11
 
 | Driver does | Presenter says |
 |---|---|
@@ -109,13 +109,13 @@ Personas, so the client sees different end-users:
 |---|---|
 | Toggle DevTools device view | "Same app on a phone: list first, map one tap away." |
 
-### 4.8 Engineering (11:30 to 14:00) — Engineer presents
+### 4.8 Engineering (11:30 to 14:00), Engineer presents
 
 Use 3 or 4 slides or the README diagram. Keep each point to about 30 seconds.
 
 1. **Layered design that matches our Lab 3 class diagram.** Boundary (React screens, REST controllers), control
    (`FlatSearchService`, `CpfGrantService`, `ValuationService`, ...), entity (JPA). Class names are the ones in our design.
-2. **Patterns where they earn their place.**
+2. **Design patterns we used.**
    - *Proxy*: `CachingApiGatewayProxy` caches OneMap travel times and cuts off any call slower than 2 seconds,
      falling back to the last known value and showing "may be outdated" (NFR-3).
    - *Strategy*: `WeightedSumScoringStrategy` and `ThresholdValuationStrategy` can be swapped without touching search or
@@ -126,7 +126,7 @@ Use 3 or 4 slides or the README diagram. Keep each point to about 30 seconds.
    it pulls new sales, skips incomplete towns, recomputes baselines, and on failure keeps yesterday's baseline and logs an alert.
 4. **Security and privacy.** bcrypt passwords, JWT with server-side sessions (30-min idle, 8-hour cap), account
    lockout, login rate limit, AES-256-GCM for income and parental postal code.
-5. **Testing.** 68 automated tests. Black-box (equivalence classes and boundaries) on `CpfGrantService`; basis path
+5. **Testing.** 68 automated tests. Black-box (equivalence classes and boundaries) on `CpfGrantService`, and basis path
    on `login()` (V(G) = 5) and the batch `ingest()` (V(G) = 7). We injected 4 deliberate bugs and the tests caught all 4.
 6. **Runs two ways.** Laptop mode (H2, offline, nothing to install) and production mode (`docker compose up`:
    PostgreSQL + PostGIS + Redis).
@@ -144,7 +144,7 @@ Leave the results page on screen for questions.
 | Problem | Do this |
 |---|---|
 | App will not start / crashes | Backup laptop takes over; Driver keeps talking through the same step |
-| A step behaves unexpectedly | Skip to the next section; do not debug live |
+| A step behaves unexpectedly | Skip to the next section and don't debug live |
 | Running late at 10:00 | Skip 4.6 and 4.7 |
 | Total failure | Play the 5-minute video from section 6 and keep the engineering section live |
 
