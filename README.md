@@ -207,8 +207,9 @@ Class names follow the team's Lab 3 skeleton, so the code matches the design mod
   (A-5) from `tools/generate_seed.py`.
 - **Live mode has not been tested end to end**, because the build environment could not reach the government APIs.
   The request formats follow each API's public documentation.
-- **The Docker image itself has not been built here** (no Docker daemon was available). The same jar was run
-  against a real PostgreSQL 16 and Redis 7 with the `docker` profile, and the full journey passed.
+- **The Docker stack was tested on 2 Nov 2026.** `docker compose up --build` on a team member's Windows PC started
+  all three containers, seeded 1,488 flats, and served the app on http://localhost:8080; a search and a flat detail
+  page both worked. The full journey was also run earlier against PostgreSQL 16 and Redis 7 with the `docker` profile.
 - Minimum lease and minimum floor area filters run in the browser over the (at most 500) results, because the
   view API only filters by price, flat type and town.
 - PostGIS is installed but distances are computed in Java, not with spatial queries. At 500 flats per search
