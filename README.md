@@ -45,7 +45,7 @@ cd hdb-resale-finder
 ```
 
 Or download the zip and unzip it. On Windows, from your Downloads folder:
-`Expand-Archive .\homematch-sg.zip -DestinationPath .\homematch-sg` then `cd .\homematch-sg\app`.
+`Expand-Archive .\hdb-resale-finder-main.zip -DestinationPath .` then `cd .\hdb-resale-finder-main`.
 
 ### 1.3 Start the backend (terminal 1)
 
@@ -55,7 +55,7 @@ cd backend
 ```
 
 The first run downloads Maven and the libraries, so allow a few minutes. It is ready when the log shows
-`Started Application` and `Loaded 650 flats`. **Leave this window open**; closing it stops the backend. The
+`Started Application` and `Loaded 1,488 flats`. **Leave this window open**; closing it stops the backend. The
 "Using generated security password" line can be ignored: the app does not use it.
 
 ### 1.4 Start the website (terminal 2)
@@ -69,8 +69,7 @@ npm run dev
 Open **http://localhost:5173**. Try workplaces like `Raffles Place`, `one-north`, `Jurong East`,
 `Changi Business Park` or a 6-digit postal code such as `238859`.
 
-To stop, press `Ctrl+C` in each window. On first start the backend loads 650 flats in 25 towns and about 1,300
-resale transactions; they are stored in `backend/data/`. Delete that folder to start fresh.
+To stop, press `Ctrl+C` in each window. On first start the backend loads 1,488 flats in 25 towns and about 1,738 resale transactions; they are stored in `backend/data/`. Delete that folder to start fresh.
 
 ### 1.5 If something goes wrong
 
