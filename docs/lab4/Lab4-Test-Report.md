@@ -33,7 +33,7 @@ mvn test -Dtest='CpfGrantServiceBlackBoxTest,*BasisPathTest' # only the Lab 4 te
 `CpfGrantService` is the control class behind UC-06 *Calculate CPF Grant and Affordability* and UC-07 *Input
 Financial Profile*. It turns a buyer's income, marital status and parents' location into CPF Housing Grant, EHG and PHG amounts, then works out the
 down payment, loan, monthly instalment and an affordability rating. Getting it wrong tells a buyer they can afford a
-flat they cannot, so it is the most consequential calculation in the system. It also has many input variables with
+flat they cannot, so it is the calculation that matters most in the system. It also has many input variables with
 clear ranges in the SRS, which suits equivalence class and boundary value testing.
 
 **Fixture.** One 4-room flat in Ang Mo Kio last sold for **$500,000**. Parent postal code `560123` (postal sector 56)
@@ -191,7 +191,7 @@ then flip one decision at a time.
 
 ### 3.3 Evidence that the tests do their job
 
-**Coverage (JaCoCo 0.8.12 via the IDE's built-in coverage runner, Lab 4 tests only; not added to `pom.xml`/Maven).** `login()`: 100% of instructions and branches.
+**Coverage (JaCoCo 0.8.12 via the IDE's built-in coverage runner, Lab 4 tests only, not added to `pom.xml`/Maven).** `login()`: 100% of instructions and branches.
 `ingest()`: 100% of instructions and 80% of branches. The 4 branches not taken are single conditions inside the two
 compound predicates (P2 has 2 conditions, P3 has 4). Basis path testing treats each compound predicate as one decision,
 as in the lecture method, so this is expected. Counting every simple condition as its own node would give V(G) = 11,
@@ -224,11 +224,11 @@ caught, then the code was restored.
 - Tests replace the database and external APIs with Mockito mocks, so they check the logic, not the SQL or the real
   government APIs. `ApiFlowTest` covers the full HTTP stack against an embedded H2 database.
 - Grant amounts are tested against `grant-rules.yml`, so the file itself was checked on 27 Oct 2026. The EHG table for
-  families, HDB's own EHG table for singles and the PHG amounts all match. The CPF Housing Grant (Family Grant / Singles Grant) for resale flats was missing, so it was added on 27 Oct 2026 (BB-01 to BB-11 and BB-28 cover it). SRS v1.4 (in `docs/requirements/`) is the version these tests trace to; its FR-11 names this grant.
+  families, HDB's own EHG table for singles and the PHG amounts all match. The CPF Housing Grant (Family Grant / Singles Grant) for resale flats was missing, so it was added on 27 Oct 2026 (BB-01 to BB-11 and BB-28 cover it). SRS v1.4 (in `docs/requirements/`) is the version these tests trace to. Its FR-11 names this grant.
 - **Finding (resolved): loan limits on screen vs API.** The CPF panel's sliders now allow tenure 5 to 25 years,
   down payment 25% to 100% and interest 0% to 10%. Tenure stops at 25 years because that is the HDB loan maximum
-  (bank loans go to 30). Down payment starts at 25% because an HDB loan covers at most 75% of the price; the API
+  (bank loans go to 30). Down payment starts at 25% because an HDB loan covers at most 75% of the price. The API
   still accepts lower values and raises them to 25% with a notice (BB-08, BB-10). The API's 30-year tenure limit
-  is kept; lowering `@Max(30)` to 25 would also require updating BB-09, BB-15 and BB-21.
-  **Limitations:** The calculator does not account for potential reductions in the maximum HDB loan tenure based on the applicant's age or the flat's remaining lease. Additionally, the interest-rate slider (0–10%) is intended for hypothetical financial simulations. The default interest rate remains at 2.6%, reflecting the prevailing HDB concessionary loan rate used by the application.
+  is kept. Lowering `@Max(30)` to 25 would also require updating BB-09, BB-15 and BB-21.
+  **Limitations:** The calculator doesn't shorten the maximum HDB loan tenure for the applicant's age or the flat's remaining lease. The interest-rate slider (0% to 10%) is only there to try out what-if rates. The default rate stays at 2.6%, which is the HDB concessionary loan rate the app uses.
   

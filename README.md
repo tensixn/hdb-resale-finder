@@ -10,7 +10,7 @@ The UI deliberately does **not** follow the wireframes in the SRS. Every rank ex
 how its 100 match points split between commute and the four livability factors, what helps and hurts it most, and
 why it beats or trails its neighbour. Re-weighting shows what moved and why. Results sit beside a map with pins
 coloured by Livability Index, and on phones the map is one tap away. The design was chosen from three competing
-versions; see `docs/design-arena.md`.
+versions (see `docs/design-arena.md`).
 
 ```
 hdb-resale-finder/
@@ -24,7 +24,7 @@ hdb-resale-finder/
 ## 1. Run it on your own computer
 
 No database, Redis or API keys are needed. By default the backend uses an embedded H2 database and runs the
-external APIs in offline mode with sample data. You only install **Java 17+** and **Node 20+**; Maven comes with the
+external APIs in offline mode with sample data. You only install **Java 17+** and **Node 20+**. Maven comes with the
 project (`mvnw` / `mvnw.cmd` downloads it on first run).
 
 ### 1.1 Install Java and Node (once)
@@ -55,7 +55,7 @@ cd backend
 ```
 
 The first run downloads Maven and the libraries, so allow a few minutes. It is ready when the log shows
-`Started Application` and `Loaded 1,488 flats`. **Leave this window open**; closing it stops the backend. The
+`Started Application` and `Loaded 1,488 flats`. **Leave this window open**, because closing it stops the backend. The
 "Using generated security password" line can be ignored: the app does not use it.
 
 ### 1.4 Start the website (terminal 2)
@@ -69,7 +69,7 @@ npm run dev
 Open **http://localhost:5173**. Try workplaces like `Raffles Place`, `one-north`, `Jurong East`,
 `Changi Business Park` or a 6-digit postal code such as `238859`.
 
-To stop, press `Ctrl+C` in each window. On first start the backend loads 1,488 flats in 25 towns and about 1,738 resale transactions; they are stored in `backend/data/`. Delete that folder to start fresh.
+To stop, press `Ctrl+C` in each window. On first start the backend loads 1,488 flats in 25 towns and about 1,738 resale transactions, and stores them in `backend/data/`. Delete that folder to start fresh.
 
 ### 1.5 If something goes wrong
 
@@ -208,12 +208,12 @@ Class names follow the team's Lab 3 skeleton, so the code matches the design mod
 - **Live mode has not been tested end to end**, because the build environment could not reach the government APIs.
   The request formats follow each API's public documentation.
 - **The Docker stack was tested on 2 Nov 2026.** `docker compose up --build` on a team member's Windows PC started
-  all three containers, seeded 1,488 flats, and served the app on http://localhost:8080; a search and a flat detail
+  all three containers, seeded 1,488 flats, and served the app on http://localhost:8080. A search and a flat detail
   page both worked. The full journey was also run earlier against PostgreSQL 16 and Redis 7 with the `docker` profile.
 - Minimum lease and minimum floor area filters run in the browser over the (at most 500) results, because the
   view API only filters by price, flat type and town.
 - PostGIS is installed but distances are computed in Java, not with spatial queries. At 500 flats per search
-  this is well under the 3-second target (NFR-1); searches took about 0.3 seconds in testing.
+  this is well under the 3-second target (NFR-1), and searches took about 0.3 seconds in testing.
 - The brand name "HomeMatch SG" is a placeholder. Search the frontend for `HomeMatch` to rename it
   (`index.html`, `NavBar.tsx`, `SignupScreen.tsx`, `HelpScreen.tsx`).
 
