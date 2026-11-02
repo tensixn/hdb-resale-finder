@@ -15,7 +15,7 @@ subtitle: "HDB Resale Flat Search and Analysis System (HomeMatch SG), Team ABCDE
 |---|---|---|---|
 | 3.2.1 | Control class `CpfGrantService` (UC-06, UC-07; FR-10 to FR-13) | Equivalence classes + boundary values | `service/CpfGrantServiceBlackBoxTest` |
 | 3.2.2 (method 1) | `AuthenticationService.login()` (UC-11; FR-26) | Basis path | `service/AuthenticationServiceBasisPathTest` |
-| 3.2.2 (method 2) | `ValuationService.ingest()` (UC-12; FR-29, FR-30) | Basis path | `service/ValuationIngestBasisPathTest` |
+| 3.2.2 (method 2) | `ValuationService.ingest()` (UC-12; FR-28) | Basis path | `service/ValuationIngestBasisPathTest` |
 
 All tests are automated with JUnit 5, AssertJ and Mockito (Spring Boot test starter). Run them from `backend/`:
 
@@ -30,8 +30,8 @@ mvn test -Dtest='CpfGrantServiceBlackBoxTest,*BasisPathTest' # only the Lab 4 te
 
 ### 2.1 Why this class
 
-`CpfGrantService` is the control class behind UC-06 *Calculate CPF Grant Eligibility* and UC-07 *Submit Financial
-Profile*. It turns a buyer's income, marital status and parents' location into CPF Housing Grant, EHG and PHG amounts, then works out the
+`CpfGrantService` is the control class behind UC-06 *Calculate CPF Grant and Affordability* and UC-07 *Input
+Financial Profile*. It turns a buyer's income, marital status and parents' location into CPF Housing Grant, EHG and PHG amounts, then works out the
 down payment, loan, monthly instalment and an affordability rating. Getting it wrong tells a buyer they can afford a
 flat they cannot, so it is the most consequential calculation in the system. It also has many input variables with
 clear ranges in the SRS, which suits equivalence class and boundary value testing.
@@ -66,7 +66,7 @@ not by running the code.
 | EHG first band edge (family) | 1,500 / 1,501 | BB-01, BB-02 |
 | EHG ceiling (family) | 9,000 / 9,001 | BB-03, BB-04 |
 | EHG ceiling (single, 2x income) | 4,500 / 4,501 | BB-05, BB-06 |
-| CPF Housing Grant ceiling | family 16,000 / 16,001; single 8,000 / 8,001 | BB-28 |
+| CPF Housing Grant ceiling and flat-type checks (V21 to V24) | family 16,000 / 16,001 (4-room); single 8,000 / 8,001 (4-room); income 5,000 for Engaged (5-room), Single (Executive) and Married (2-room) | BB-28 |
 | Income lower limit | -1 / 0 | BB-12, BB-07 / BB-21 |
 | Income upper limit | 1,000,000 / 1,000,001 | BB-21, BB-13 |
 | Tenure | 4 / 5 / 30 / 31 | BB-14, BB-08, BB-09, BB-15 |
@@ -74,7 +74,6 @@ not by running the code.
 | Interest | -0.01 / 0 / 10 / 10.01 | BB-18, BB-08, BB-09, BB-19 |
 | PHG distance | 4.0 km / 4.01 km | BB-26 |
 | Affordability ratio | 25.0% / 25.1% / 30.0% / 30.1% | BB-27 |
-| BB-28 | V21, V22, V23, V24 boundaries | Married 16,000 / 16,001 (4-room); Single 8,000 / 8,001 (4-room); Engaged 5,000 (5-room); Single 5,000 (Executive); Married 5,000 (2-room) | 80,000 / 0; 40,000 / 0; 50,000; 25,000; 80,000 | Same. Pass |
 
 **Keeping the number of cases down.** Each valid test covers several valid classes at once (for example BB-08 covers
 V12 lower edge, V14 lower edge and V17 together). Each invalid test changes exactly one input away from a valid
@@ -115,6 +114,7 @@ parents. "Rating" is the affordability rating. All amounts in S$.
 | BB-25 | I13 | Flat id 999 | 404 `NOT_FOUND` | Same. Pass |
 | BB-26 | PHG boundary | Married, not with parents, distance 4.0 km / 4.01 km | 20,000 / 0 | Same. Pass |
 | BB-27 | O1, O2, O3 boundaries | Income 10,000; instalment 2,500 / 2,510 / 3,000 / 3,010 | COMFORTABLE / STRETCHED / STRETCHED / ABOVE_LIMIT | Same. Pass |
+| BB-28 | V21 to V24 boundaries | Married income 16,000 / 16,001 (4-room); Single income 8,000 / 8,001 (4-room); income 5,000 for Engaged (5-room), Single (Executive) and Married (2-room) | Grant 80,000 / 0; Grant 40,000 / 0; Grant 50,000; Grant 25,000; Grant 80,000 | Same. Pass |
 
 BB-26 to BB-28 call `phg()`, `affordability()` and `cpfHousingGrant()` directly, because no real postal sector sits exactly 4 km from a
 flat and no real loan gives an instalment of exactly 25% of income.
@@ -191,7 +191,7 @@ then flip one decision at a time.
 
 ### 3.3 Evidence that the tests do their job
 
-**Coverage (JaCoCo 0.8.12, Lab 4 tests only).** `login()`: 100% of instructions and branches.
+**Coverage (JaCoCo 0.8.12 via the IDE's built-in coverage runner, Lab 4 tests only; not added to `pom.xml`/Maven).** `login()`: 100% of instructions and branches.
 `ingest()`: 100% of instructions and 80% of branches. The 4 branches not taken are single conditions inside the two
 compound predicates (P2 has 2 conditions, P3 has 4). Basis path testing treats each compound predicate as one decision,
 as in the lecture method, so this is expected. Counting every simple condition as its own node would give V(G) = 11,
@@ -216,8 +216,8 @@ caught, then the code was restored.
 | FR-12 instalment and assumptions | UC-06 | `CpfGrantService` | `estimate()`, `monthlyInstalment()`, `affordability()` | BB-01, BB-08, BB-09, BB-27 |
 | FR-13 adjustable loan assumptions | UC-06 | `CpfGrantRequestDto` | Bean Validation constraints | BB-08 to BB-11, BB-14 to BB-19, BB-21 |
 | FR-26 lockout after failed logins | UC-11 | `AuthenticationService` | `login()` | WB-A1 to WB-A5 |
-| FR-29 ingest new transactions | UC-12 | `ValuationService`, `ExternalApiGateway` | `ingest()` | WB-B1, WB-B4 to WB-B7 |
-| FR-30 / UC-12.EX.2 incomplete data | UC-12 | `ValuationService` | `ingest()` | WB-B2, WB-B3 |
+| FR-28 ingest new transactions | UC-12 | `ValuationService`, `ExternalApiGateway` | `ingest()` | WB-B1, WB-B4 to WB-B7 |
+| FR-28 / UC-12.EX.2 incomplete data | UC-12 | `ValuationService` | `ingest()` | WB-B2, WB-B3 |
 
 ## 5. Limitations
 

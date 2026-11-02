@@ -9,11 +9,12 @@ HDB Resale Flat Search and Analysis System (HomeMatch SG). Start here.
 | Source code: frontend (React, TypeScript) | [frontend/src](../frontend/src) | 4, 5 |
 | Automated test cases (68 tests) | [backend/src/test](../backend/src/test/java/com/abcde/hdbresale) | 4, 5 |
 | Test design and results (black-box, basis path) | [lab4/Lab4-Test-Report.md](lab4/Lab4-Test-Report.md) ([PDF](lab4/Lab4-Test-Report.pdf)) | 4 |
-| Software Requirements Specification, incl. design model | [requirements/](requirements/) (`SRS_SC2006_TeamABCDE_v1.x.pdf`) | 2, 3, 5 |
-| Use case model (diagram and descriptions) | [requirements/](requirements/) (`UseCase_SC2006_TeamABCDE_v1.x.pdf`) | 2, 3, 5 |
+| Software Requirements Specification v1.4, incl. design model | [requirements/SRS_SC2006_TeamABCDE_v1.4.pdf](requirements/SRS_SC2006_TeamABCDE_v1.4.pdf) | 2, 3, 5 |
+| Use case model v1.2 (diagram and descriptions) | [requirements/UseCase_SC2006_TeamABCDE_v1.2.pdf](requirements/UseCase_SC2006_TeamABCDE_v1.2.pdf) | 2, 3, 5 |
 | Class diagrams of key classes (PlantUML sources + images) | [design/class-diagrams/](design/class-diagrams/) | 3, 5 |
 | UI dialog map | [design/dialog-map/](design/dialog-map/) | 3, 5 |
-| Demo script (final, 20 minutes) and video plan | [lab5/Demo-Script.md](lab5/Demo-Script.md) | 5 |
+| Presentation script (15 minutes + 5 minutes Q&A) | [lab5/Presentation-Script.md](lab5/Presentation-Script.md) ([PDF](lab5/Presentation-Script.pdf)) | 5 |
+| Demo video shot list (under 7 minutes, captions) | [lab5/Video-Shot-List.md](lab5/Video-Shot-List.md) ([PDF](lab5/Video-Shot-List.pdf)) | 5 |
 | Demo video (5 to 7 minutes) | _add YouTube link here_ | 5 |
 | Coding-agent exercises and reflections | [lab4/ai-exercise/](lab4/ai-exercise/) | 4 |
 | Meeting minutes | [minutes/](minutes/) | all |
