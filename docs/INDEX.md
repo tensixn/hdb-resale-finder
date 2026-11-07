@@ -9,7 +9,7 @@ HDB Resale Flat Search and Analysis System (HomeMatch SG). Start here.
 | Source code: frontend (React, TypeScript) | [frontend/src](../frontend/src) | 4, 5 |
 | Automated test cases (68 tests) | [backend/src/test](../backend/src/test/java/com/abcde/hdbresale) | 4, 5 |
 | Test design and results (black-box, basis path) | [lab4/Lab4-Test-Report.md](lab4/Lab4-Test-Report.md) ([PDF](lab4/Lab4-Test-Report.pdf)) | 4 |
-| Software Requirements Specification v1.4, incl. design model | [requirements/SRS_SC2006_TeamABCDE_v1.4.pdf](requirements/SRS_SC2006_TeamABCDE_v1.4.pdf) | 2, 3, 5 |
+| Software Requirements Specification v1.4, incl. system architecture and design model (Appendix D) | [requirements/SRS_SC2006_TeamABCDE_v1.4.pdf](requirements/SRS_SC2006_TeamABCDE_v1.4.pdf) | 2, 3, 5 |
 | Use case model v1.2 (diagram and descriptions) | [requirements/UseCase_SC2006_TeamABCDE_v1.2.pdf](requirements/UseCase_SC2006_TeamABCDE_v1.2.pdf) | 2, 3, 5 |
 | Class diagrams of key classes (PlantUML sources + images) | [design/class-diagrams/](design/class-diagrams/) | 3, 5 |
 | UI dialog map | [design/dialog-map/](design/dialog-map/) | 3, 5 |

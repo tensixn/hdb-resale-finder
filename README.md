@@ -181,7 +181,7 @@ All SC2006 deliverables (requirements, class diagrams, dialog map, test report, 
 | UC-14 Manage Profile | Profile | `/api/profile` | `ProfileService` |
 | UC-15 Sign Out | Nav bar (Sign out) | `POST /api/auth/logout` | `AuthenticationService` |
 
-Class names follow the team's Lab 3 skeleton, so the code matches the design model report.
+Class names follow the team's Lab 3 skeleton, so the code matches the design model in SRS Appendix D.
 
 ## 8. Rules the app uses
 
